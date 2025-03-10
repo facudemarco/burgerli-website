@@ -1,19 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto, Inter, Pattaya } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Logo from './components/Logo'
 
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"]
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"]
+})
+
+export const pattaya = Pattaya({
+  weight: ["400"],
+  variable: "--font-pattaya",
+  subsets: ["latin"]
+})
 
 export const metadata: Metadata = {
   title: "Burgerli - Hamburgueseria",
@@ -29,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} bg-[#FCEDCC] ${geistMono.variable} antialiased`}
+        className={`${roboto.className} bg-[#FCEDCC] antialiased`}
       >
         <Header />
         {children}
