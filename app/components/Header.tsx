@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Logo from './Logo'
 
 export default function Header() {
-    const [user, setUser] = useState(false)
+    const [user] = useState(false)
   return (
         <header className="flex justify-between text-md font-semibold bg-[#EA951B] py-2 px-5">
             <Logo width={70}/>
