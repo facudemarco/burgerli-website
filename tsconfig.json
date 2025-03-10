@@ -12,10 +12,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "rules": {
-      "@next/next/no-img-element": "off",
-      "@typescript-eslint/no-unused-vars": "off"
-    }, 
     "incremental": true,
     "plugins": [
       {
