@@ -4,8 +4,6 @@ import Cart from './components/home/Cart'
 import Sucursales from './components/home/Sucursales'
 import Zonas from './components/home/Zonas';
 
-
-
 export default function Home() {
   return (
     <main className='w-full'>
@@ -17,7 +15,6 @@ export default function Home() {
       id="tienda"
       >
           <Productos />
-
           <Cart />
       </section>
       <section id="sucursales">

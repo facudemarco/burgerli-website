@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { pattaya,roboto} from "../layout";
 import Logo from "./Logo";
 import Facebook from './icons/Facebook'
@@ -8,9 +9,9 @@ export default function Header() {
   return (
         <footer className={`${pattaya.className} bg-[#EA951B] pt-28`}>
             <ul className="flex justify-between items-end mb-5 px-10">
-                <li>
+                <Link href='/'>
                     <Logo width="135px"/>
-                </li>
+                </Link>
                 <li className="flex flex-col">
                     <p className="text-2xl">Seguinos en nuestras en redes</p>
                     <ul className="flex justify-around">
