@@ -9,17 +9,17 @@ export default function Sucursales() {
         <ul className="flex justify-between items-center mx-20">
             <li>
                 <p className={`${pattaya.className} text-center text-2xl`}>Lanus</p>
-                <small className="underline">• Sarmiento 1736</small>
+                <small className="underline font-semibold">• Sarmiento 1736</small>
                 <img src="./logo.png" alt="" />
             </li>
             <li>
             <p className={`${pattaya.className} text-center text-2xl`}>Wilde</p>
-                <small className="underline">• Casacubierta 918</small>
+                <small className="underline font-semibold">• Casacubierta 918</small>
                 <img src="./logo.png" alt="" />
             </li>
             <li>
             <p className={`${pattaya.className} text-center text-2xl`}>Gerli</p>
-                <small className="underline">• Onsari 417</small>
+                <small className="underline font-semibold">• Onsari 417</small>
                 <img src="./logo.png" alt="" />
             </li>
         </ul>

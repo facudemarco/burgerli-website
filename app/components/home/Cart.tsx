@@ -1,39 +1,60 @@
-import { pattaya } from '@/app/layout'
+import { pattaya,inter } from '@/app/layout'
 // import Cheddar from '../icons/Cheddar'
 import Delivery from './Delivery'
+import Link from 'next/link'
+import Cupon from '../Cupon'
 
 export default function Cart() {
+
+
+
   return (
-    <section className="w-1/4 h-min text-white rounded-2xl bg-amber-900 py-3 px-5">
-          {/* <Cheddar /> */}
-          <h2 className={`${pattaya.className} text-xl`}>Mi pedido</h2>
+    <section className={`${inter.className} w-[450px] xl:block hidden pt-28 h-min cart text-white rounded-2xl bg-primary py-3 px-5`}>
+          <h2 className={`${pattaya.className} text-2xl`}>Mi pedido</h2>
           <ul className='flex mt-6 flex-col gap-2'>
-            <li className='flex justify-between items-center'>
-              <div className='flex gap-1'>
-              <small className='text-orange-500'>x1</small>
-              <p>Hamburguesa triple queso</p>
-              </div>
-              <span className='font-semibold'>$10.000</span>
+            <li className='flex justify-between items-start'>
+                <div className='flex flex-col items-start gap-1'>
+                    <p className='font-bold'>Hamburguesa triple queso</p>
+                    <small>Extra:</small>
+                    <small>Sin:</small>
+                    <small>Papas:</small>
+                    <button className='underline cursor-pointer text-sm'>Editar</button>
+                </div>
+                <div className='flex flex-col gap-3 items-center'>
+                    <span className='font-bold'>$10.000</span>
+                    <div className='flex gap-4 border rounded-xl justify-between px-2'>
+                      <button className='cursor-pointer'> - </button>
+                      <span className='text-tertiary font-bold'>1</span>
+                      <button className='cursor-pointer'> + </button>
+                    </div>
+                </div>
             </li>
             <hr className='font-bold' />
-            <li className='flex justify-between items-center'>
-              <div className='flex gap-1'>
-              <small className='text-orange-500'>x1</small>
-              <p>Hamburguesa triple queso</p>
-              </div>
-              <span className='font-semibold'>$10.000</span>
+            <li className='flex justify-between items-start'>
+                <div className='flex flex-col items-start gap-1'>
+                    <p className='font-bold'>Hamburguesa triple queso</p>
+                    <small>Extra:</small>
+                    <small>Sin:</small>
+                    <small>Papas:</small>
+                    <button className='underline cursor-pointer text-sm'>Editar</button>
+                </div>
+                <div className='flex flex-col gap-3 items-center'>
+                    <span className='font-bold'>$10.000</span>
+                    <div className='flex gap-4 border rounded-xl justify-between px-2'>
+                      <button className='cursor-pointer'> - </button>
+                      <span className='text-tertiary font-bold'>1</span>
+                      <button className='cursor-pointer'> + </button>
+                    </div>
+                </div>
             </li>
             <hr className='font-bold' />
           </ul>
           <h3 className='mt-4 font-semibold'>Cupon de descuento</h3>
-          <div className='flex bg-white rounded-xl py-1 my-2'>
-          <input className='w-full text-black rounded-xl' type="text" />
-          <button className='text-black font-semibold px-2 cursor-pointer'>Aplicar</button>
-          </div>
+          <Cupon />
           <hr />
           {<Delivery />}
           <hr />
-          <ul className='my-3 text-gray-500'>
+          <ul className='my-3 text-gray-500 w-full'>
             <li className='flex justify-between'>
               <p>Subtotal</p>
               <span>$20.000</span>
@@ -46,14 +67,16 @@ export default function Cart() {
             <p>Delivery</p>
             <span>$5.000</span>
             </li>
-            <li className='flex justify-between mt-10 text-xl mb-5 font-bold text-orange-400'>
+            <li className='flex justify-between mt-10 text-xl mb-5 font-bold text-tertiary'>
               <h4>Total</h4>
               <p>$20.000</p>
             </li>
             <h5 className='text-white text-lg font-semibold'>Instrucciones</h5>
             <hr />
             <textarea className='bg-white rounded-xl px-3 py-1 text-black font-semibold my-5 w-full h-52'></textarea>
-            <button className='bg-orange-500 w-full py-2 rounded-xl text-black font-semibold text-lg'>Continuar</button>
+            <Link href="/checkout">
+              <button className='bg-tertiary w-full py-2 cursor-pointer rounded-xl text-black font-bold text-lg'>Continuar</button>
+            </Link>
           </ul>
           
         </section>

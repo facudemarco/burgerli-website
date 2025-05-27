@@ -1,2 +1,22 @@
 @import "tailwindcss";
 
+@theme {
+    --color-primary: #442915;
+    --color-secondary: #FFE936;
+    --color-tertiary: #EA951B;
+  }
+html{
+  scroll-behavior: smooth;
+}
+
+.cart{
+  background-image: url("/bg-cart.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+  
+.footer{
+  background-image: url("/bg-footer.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}

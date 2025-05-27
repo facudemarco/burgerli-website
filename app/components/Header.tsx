@@ -11,16 +11,16 @@ export default function Header() {
     const handleClick = () => {setMenu(!menu)}
 
   return (
-        <header className="flex justify-between items-center text-md font-semibold bg-[#EA951B] py-2 px-5">
+        <header className="flex justify-between items-center text-md font-semibold bg-tertiary py-2 px-5">
             <Link href='/'>
             <Logo width={70}/>
             </Link>
             <section className="flex gap-10 items-center">
                 <ul className="flex gap-10">
-                    <li id='hamburguesas' className='cursor-pointer'>Hamburguesas</li>
-                    <li id='acompañamientos' className='cursor-pointer'>Acompañamientos</li>
-                    <li id='bebidas' className='cursor-pointer'>Bebidas</li>
-                    <li id='sucursales' className='cursor-pointer'>Sucursales</li>
+                    <Link href="#hamburguesas" className='cursor-pointer'>Hamburguesas</Link>
+                    <Link href="#acompañamientos" className='cursor-pointer'>Acompañamientos</Link>
+                    <Link href="#bebidas" className='cursor-pointer'>Bebidas</Link>
+                    <Link href="#sucursales" className='cursor-pointer'>Sucursales</Link>
                 </ul>
 
                 {user ? 
@@ -39,13 +39,14 @@ export default function Header() {
                 </section>
                 }
             </section>
-            {menu ? <div className='absolute right-5 rounded-b-xl top-20 bg-red-500'>
+            {menu ? 
+            <div className='absolute right-5 rounded-b-xl top-20 bg-red-500'>
                 <ul className='flex gap-1 flex-col justify-between items-start py-2 pl-3 pr-5 bg-amber-950 text-white'>
-                    <li>Mis favoritos</li>
-                    <li>Historial de compras</li>
-                    <li>Informacion personal</li>
+                    <Link href="/myaccount/favorites">Mis favoritos</Link>
+                    <Link href="/myaccount/order-history">Historial de compras</Link>
+                    <Link href="/myaccount/personal-information">Informacion personal</Link>
                 </ul>
-                <p className='text-center py-1'>Cerrar sesion</p>
+                <Link href="/" className='text-center py-1'>Cerrar sesion</Link>
             </div> : ''}
         </header>
     )
