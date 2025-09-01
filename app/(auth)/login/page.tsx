@@ -1,6 +1,136 @@
+'use client'
+import { Inter, Pattaya } from "next/font/google";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import useAuth from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
+
+const pattaya = Pattaya({
+  weight: ["400"],
+  variable: "--font-pattaya",
+  subsets: ["latin"]
+})
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"]
+})
+
 export default function LoginPage() {
-    return (
-      <div>LoginPage</div>
-    )
-  }
-  
+  const router = useRouter();
+  const {login} = useAuth()
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    
+    const res = await login({username, password});
+    if(res!.status === 200) {
+      router.push("/myaccount/favorites");
+    }
+  };
+  const [showPass, setShowPass] = useState(false);
+  return (
+    <main className={`w-full bg-[#fdecc9] flex items-center my-30 justify-center p-6" ${inter.className}`}>
+      <div className="w-full relative max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-3xl overflow-hidden shadow-2xl">
+        {/* Left: image + copy */}
+        <div className="relative hidden lg:block">
+          <img
+            src='/login.png'
+            alt="Burger background"
+            className="w-full h-[600px] object-cover blur-[5px]"
+          />
+          <div className="absolute inset-0 bg-[#262626] opacity-80" />
+          <div className="absolute inset-0 flex flex-col justify-center px-10 text-white"> 
+            <h2 className={`text-4xl font-extrabold leading-tight ${pattaya.className}`}>
+              Volvé a disfrutar de tus<br />
+              <span className={pattaya.className}>hamburguesas favoritas</span>
+            </h2>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed opacity-90">
+              Iniciá sesión y descubrí promos especiales, tus hamburguesas favoritas y novedades deliciosas. ¡Tu próxima comida está a un clic!
+            </p>
+          </div>
+        </div>
+
+        {/* Right: form panel */}
+        <form onSubmit={handleSubmit} className={`bg-[#4b2f1e] flex flex-col justify-between h-full z-0 text-white px-8 sm:px-10 py-10`}>
+
+          {/* Logo circle */}
+          <div className="absolute -top-2 right-5 md:right-54 z-20 flex items-center justify-center">
+            <img src="/logo.png" alt="Burgerli Logo" className="w-36 z-20" />
+          </div>
+
+          <div className="pt-16 max-w-md mx-auto w-full">
+            {/* Email */}
+            <label className="block text-sm font-semibold mb-2">Correo electrónico</label>
+            <div className="flex items-center gap-2 bg-transparent border-b border-white/50 focus-within:border-white transition">
+              <Mail className="w-4 h-4 opacity-80" />
+              <input
+              onChange={(e) => setUsername(e.target.value)}
+                type="text"
+                autoComplete="username"
+                placeholder="Ingrese su correo electrónico"
+                className="w-full bg-transparent outline-none py-3 placeholder:text-white/70"
+              />
+            </div>
+
+            {/* Password */}
+            <label className="block text-sm font-semibold mt-6 mb-2">Contraseña</label>
+            <div className="flex items-center gap-2 bg-transparent border-b border-white/50 focus-within:border-white transition">
+              <Lock className="w-4 h-4 opacity-80" />
+              <input
+              onChange={(e) => setPassword(e.target.value)}
+
+                type={showPass ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="Ingrese su contraseña"
+                className="w-full bg-transparent outline-none py-3 placeholder:text-white/70"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass((s) => !s)}
+                className="p-1 -mr-1 opacity-80 hover:opacity-100"
+                aria-label={showPass ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+
+            <button className="mt-3 text-sm underline underline-offset-2 opacity-90 hover:opacity-100">
+              ¿Olvidaste tu contraseña?
+            </button>
+
+            {/* Submit */}
+            <button type="submit" className="mt-6 w-full rounded-xl py-3 font-semibold bg-[#b36912] text-black hover:bg-[#a35f0f] active:scale-[.99] transition">
+              Ingresar
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-4 my-8">
+              <div className="h-px flex-1 bg-white/30" />
+              <span className="text-sm">O ingresa con:</span>
+              <div className="h-px flex-1 bg-white/30" />
+            </div>
+
+            {/* Social buttons */}
+            {/* <div className="flex items-center justify-center gap-6">
+              <SocialBtn type="google" />
+              <SocialBtn type="facebook" />
+              <SocialBtn type="instagram" />
+            </div> */}
+
+            {/* Register */}
+            <p className="mt-10 text-center text-sm">
+              ¿Todavía no tenes cuenta? {" "}
+              <Link href="/register" className="text-[#ffd21f] hover:underline font-semibold">Registrate</Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </main>
+  );
+}
+

@@ -6,14 +6,10 @@ export default function MyAccountLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className="bg-[#FCEDCC] antialiased">   
       <section className="flex">
           <Aside />
           {children}
       </section>
-        </body>
-    </html>
   );
 }
 

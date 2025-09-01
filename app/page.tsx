@@ -3,7 +3,6 @@ import SectionProductos from './components/home/SectionProductos'
 import Cart from './components/home/Cart'
 import Sucursales from './components/home/Sucursales'
 import Zonas from './components/home/Zonas';
-import CartMobile from './components/home/CartMobile';
 
 export default function Home() {
   return (

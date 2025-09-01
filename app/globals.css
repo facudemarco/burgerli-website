@@ -14,6 +14,13 @@ html{
   background-size: contain;
   background-repeat: no-repeat;
 }
+
+.login{
+  background-image: url("/bg-cart.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
   
 .footer{
   background-image: url("/bg-footer.png");

@@ -9,7 +9,7 @@ import MenuMobile from './icons/MenuMobile'
 
 export default function Header() {
 
-    const [user] = useState(false)
+    const [user] = useState(true)
     const [mobile, setMobile] = useState(false)
     const [menu, setMenu] = useState(false)
     const pathname = usePathname()
@@ -49,9 +49,9 @@ export default function Header() {
                     <div className="flex gap-5 items-center">
                         <Logo width={40}/>
                         <span>Perfil</span>
-                        <div onClick={handleClick} className={menu ? 'rotate-180 cursor-pointer' : 'cursor-pointer'}>
+                        <button onClick={handleClick} className={menu ? 'rotate-180 cursor-pointer transition-all' : 'cursor-pointer transition-all'}>
                         <ArrowDown />
-                        </div>
+                        </button>
                     </div>
                 </section>
                  : 
@@ -62,8 +62,8 @@ export default function Header() {
                     <MenuMobile />
                 </div>
             </section>
-            {menu &&
-            <div className='absolute right-0 rounded-bl-xl top-[86px] bg-red-500'>
+            {menu && 
+            <div className='absolute right-0 rounded-bl-xl z-20 top-[86px] bg-red-500'>
                 <ul className='flex gap-1 flex-col justify-between items-start py-2 pl-3 pr-5 bg-amber-950 text-white'>
                     <Link onClick={handleShow} href="/myaccount/favorites">Mis favoritos</Link>
                     <Link onClick={handleShow} href="/myaccount/order-history">Historial de compras</Link>
