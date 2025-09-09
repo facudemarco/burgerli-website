@@ -26,6 +26,15 @@ export type Orders = {
     extras: string;
     promos?: string;
 }
+export type Cart = {
+  cupon: string;
+  delivery_mode: string;
+  subtotal: number;
+  sale: number;
+  shipping: number;
+  total: number;
+  products: string[];
+};
 
 export type UsersClient = {
     id: string;
@@ -35,7 +44,9 @@ export type UsersClient = {
     email: string;
     phone: string;
     favorites: string;
-    directions: string;
+    directions: string[];
+    locality: string;
+    piso_depto?: string;
 }
 
 export type Credentials = {
@@ -44,4 +55,13 @@ export type Credentials = {
     password: string;
     local: string;
     role: string;
+}
+export interface ProductType {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  description?: string;
 }

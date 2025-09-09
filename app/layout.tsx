@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Roboto, Inter, Pattaya } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { CartContextProvider } from "@/app/context/CartContext";
+import {Toaster} from 'sonner'
 
 export const geist = Geist({
   variable: "--font-geist",
@@ -43,13 +45,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${roboto.className} bg-[#FCEDCC] antialiased`}
-      >
+      <CartContextProvider>
+      <body className={`${roboto.className} bg-[#FCEDCC] antialiased`}>
+        <Toaster richColors/>
         <Header />
         {children}
         <Footer />
       </body>
+      </CartContextProvider>
     </html>
   );
 }

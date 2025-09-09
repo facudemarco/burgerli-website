@@ -1,5 +1,6 @@
 import Ubicacion from "@/app/components/icons/Ubicacion"
 import {inter,pattaya} from "@/app/layout"
+import { UsersClient } from "@/types"
 
 export default function PersonalInformationPage() {
   return (

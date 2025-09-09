@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import useAuth from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import {toast} from "sonner";
 
 const pattaya = Pattaya({
   weight: ["400"],
@@ -22,17 +23,23 @@ export default function LoginPage() {
   const {login} = useAuth()
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    
     
     const res = await login({username, password});
-    if(res!.status === 200) {
-      router.push("/myaccount/favorites");
+    console.log(res);
+    if(res?.status === 200 && res?.data !== null) {
+      toast.success("Sesión iniciada con éxito");
+      router.push("/myaccount/personal-information");
     }
+    else{
+      toast.error("Usuario o contraseña incorrectos");
+    }
+    
   };
-  const [showPass, setShowPass] = useState(false);
   return (
     <main className={`w-full bg-[#fdecc9] flex items-center my-30 justify-center p-6" ${inter.className}`}>
       <div className="w-full relative max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-3xl overflow-hidden shadow-2xl">

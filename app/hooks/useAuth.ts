@@ -9,7 +9,7 @@ export default function useAuth() {
   const login = async ({username, password}: Auth) => {
     try {
       const response = await axios.post(
-        "https://api-burgerli.iwebtecnology.com/token",
+        "https://api-burgerli.iwebtecnology.com/api/token",
         {username, password},
         {
           headers: {
@@ -38,7 +38,7 @@ export default function useAuth() {
   const register = async ({username, password}: Auth) => {
     try {
       const response = await axios.post(
-        "https://api-burgerli.iwebtecnology.com/register",
+        "https://api-burgerli.iwebtecnology.com/api/register",
         {username, password},
         {
           headers: {
