@@ -1,6 +1,6 @@
 "use client";
 // import Aside from "@/app/components/Aside";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useMemo, useRef } from "react";
 import Order1 from "@/app/components/icons/Order-1";
 import Order2 from "@/app/components/icons/Order-2";
 import Order3 from "@/app/components/icons/Order-3";
@@ -11,17 +11,12 @@ import { useCart } from "@/app/context/CartContext";
 // import { Orders } from "@/types";
 
 type OrderStatus = "confirmed" | "preparing" | "on_route" | "delivered";
-type Order = {
-  id: string;
-  status: OrderStatus;            // <- clave para mapear paso
-  createdAt?: string;
-  // ...otros campos de tu orden
-};
+
 
 
 export default function OrderIDPage() {
   const {cart} = useCart();
-  const prevStatus = useRef<OrderStatus | null>(null);
+  // const prevStatus = useRef<OrderStatus | null>(null);
   console.log(cart);
   
    const steps = useMemo(
@@ -75,8 +70,8 @@ const setStep = (idx: number) => {
   const clamped = Math.max(0, Math.min(idx, STATUS_BY_STEP.length - 1));
   setOrder(o => ({ ...o, status: STATUS_BY_STEP[clamped] }));
 };
-const next = () => setStep(currentStep + 1);
-const prev = () => setStep(currentStep - 1);
+// const next = () => setStep(currentStep + 1);
+// const prev = () => setStep(currentStep - 1);
 
   return (
     <main className="w-full flex bg-[#FCEDCC] antialiased">

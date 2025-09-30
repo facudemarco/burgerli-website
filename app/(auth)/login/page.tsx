@@ -1,10 +1,9 @@
 'use client'
 import { Inter, Pattaya } from "next/font/google";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {toast} from "sonner";
 import { useSession } from "@/app/context/SessionContext";
 
 const pattaya = Pattaya({
@@ -28,7 +27,6 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>("");
-  const [id, setId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

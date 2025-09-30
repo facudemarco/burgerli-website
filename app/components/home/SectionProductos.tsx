@@ -1,14 +1,24 @@
+'use client'
 import { pattaya } from "@/app/layout";
 import "./Productos.css";
 import ModalProducts from "../ModalProducts";
 import useProducts from "@/app/hooks/useProducts";
 import { Burgers } from "@/types";
+import { useEffect, useState } from "react";
 
-export default async function Productos() {
+
+export default function Productos() {
+  const [burgers, setBurgers] = useState<Burgers[]>([]);
   const { getBurgers } = useProducts();
-  const res = getBurgers();
-  const burgers = await res;
-  
+  useEffect(() => {
+    const getProducts = async () => {
+      const burgers = await getBurgers();
+      setBurgers(burgers);
+      console.log(burgers);
+    };
+    getProducts();
+  }, []);
+
   const product: Burgers = {
     id_burger: "1",
     name: "Hamburguesa",

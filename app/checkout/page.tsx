@@ -1,14 +1,12 @@
 "use client";
 import { Pattaya } from "next/font/google";
 import Ubicacion from "../components/icons/Ubicacion";
-import { Orders, ProductType } from "@/types";
-import { useCart } from "../context/CartContext";
+import { Orders } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   loadCheckoutDraft,
-  clearCheckoutDraft,
-  saveCheckoutDraft,
+
 } from "@/app/lib/checkoutStorage";
 import Moto from "../components/icons/Moto";
 import { useSession } from "../context/SessionContext";
@@ -26,7 +24,7 @@ export default function CheckoutPage() {
   const { session } = useSession();
   const router = useRouter();
   const [draft, setDraft] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<Orders>({
     payment_method: "",
     delivery_mode: "",
@@ -85,7 +83,7 @@ export default function CheckoutPage() {
       return;
     }
     setDraft(d);
-    setLoading(false);
+    // setLoading(false);
 
     const onStorage = (e: StorageEvent) => {
       if (e.key === "checkoutDraft:v1") {

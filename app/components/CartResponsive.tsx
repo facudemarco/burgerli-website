@@ -10,6 +10,8 @@ import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { saveCheckoutDraft } from '@/app/lib/checkoutStorage';
+import { toast } from 'sonner';
+import checkIsOpen from '../lib/CheckShopOpen';
 
 
 const inter = Inter({
@@ -25,23 +27,24 @@ const pattaya = Pattaya({
 export default function CartResponsive({ closed }: { closed: () => void }) {
   const router = useRouter();
   // MODAL
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   // DELIVERY STATES
-  const [addresses, setAddresses] = useState([
+  const [addresses] = useState([
   { id: 'a1', label: 'Casa', street: 'Direccion falsa 1234' },
   { id: 'a2', label: 'Trabajo', street: 'Av. Siempre Viva 12' },
 ]);
   const [instructions, setInstructions] = useState('');
   const [isDeliveryChecked, setIsDeliveryChecked] = useState(false);
+  const [addressInput] = useState("");
   const [sucursal, setSucursal] = useState<string>("Gerli");
   const [isTakeAwayChecked, setIsTakeAwayChecked] = useState(false);
   const [mode, setMode] = useState<"pickup" | "delivery">("pickup");
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [deliveryPricing, setDeliveryPricing] = useState(5000);
   // TOTAL STATES
-  const [salePricing, setSalePricing] = useState(0);
+  const [salePricing] = useState(0);
   const [totalPricingCart, setTotalPricingCart] = useState<number | null>(null);
-  const { cartProducts, removeFromCart, addQuantity, removeQuantity, resetCart, totalPricing } = useCart();
+  const { cartProducts, removeFromCart, addQuantity, removeQuantity, totalPricing } = useCart();
   
   useEffect(() => {
     if (mode === 'pickup') {
@@ -70,27 +73,51 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
     ); 
   }, [deliveryPricing, totalPricing, salePricing]);
 
-    const handleContinue = async () => {
-      const draft = {
-      name: "Compra en Burgerli",
+  const handleContinue = async () => {
+    const draft = {
+      takeaway: isTakeAwayChecked,
       products: cartProducts,
       delivery_mode: mode,
-      address: selectedAddress || null,      
+      fries: cartProducts.filter((p: any) => (p.fries?.length ?? 0) > 0).map((p: any) => p.fries).flat(),
+      address: selectedAddress || addressInput || null,
       price: totalPricingCart,
       deliveryPrice: deliveryPricing,
       salePricing,
       subTotal,
-      sin: cartProducts.filter((p: any) => (p.sin?.length ?? 0) > 0).map((p: any) => p.sin).flat(),
+      sin: cartProducts
+        .filter((p: any) => (p.sin?.length ?? 0) > 0)
+        .map((p: any) => p.sin)
+        .flat(),
       // extras: cartProducts.filter((p: any) => (p.extras?.length ?? 0) > 0).map((p: any) => p.extras).flat(),
       // cupon: cupon,
-      sucursal: sucursal,
-      order_notes: instructions
+      local: sucursal,
+      order_notes: instructions,
     };
-  
-     saveCheckoutDraft(draft);      // ← guarda todo en localStorage
-      router.push("/checkout");
+
+    if(!checkIsOpen()){
+      toast.error("El tiempo de apertura de la tienda no es válido");
+      return;
     }
 
+    if (isTakeAwayChecked) {
+      // TakeAway: no necesita dirección
+      saveCheckoutDraft(draft);
+      router.push("/checkout");
+    
+    } else if (isDeliveryChecked) {
+      // Delivery: necesita dirección válida
+      if (selectedAddress || addressInput) {
+        saveCheckoutDraft(draft);
+        router.push("/checkout");
+      } else {
+        toast.error("Por favor, indique una dirección de entrega");
+      }
+    
+    } else {
+      // Si no eligió ni delivery ni takeaway
+      toast.error("Por favor, seleccione el modo de entrega");
+    }
+  }
   return (
     <section
       className={`${inter.className} md:hidden block fixed overflow-y-scroll w-full h-[90vh] right-0 z-50 pt-5 top-0 text-white rounded-2xl bg-primary py-3 px-5`}>
