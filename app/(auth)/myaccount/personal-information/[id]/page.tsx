@@ -4,7 +4,6 @@ import { useSession } from "@/app/context/SessionContext";
 import { Address, UsersClient } from "@/types";
 import { Inter, Pattaya } from "next/font/google";
 import { useEffect, useState } from "react";
-// import axios from "axios";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,13 +16,10 @@ const pattaya = Pattaya({
   subsets: ["latin"],
 });
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
+type Props = { params: { id: string } };
 
-export default function PersonalInformationPage({ params }: PageProps) {
+
+export default function PersonalInformationPage({ params }: Props) {
   const { userById } = useSession();
   const { id } = params;
   const [user, setUser] = useState<UsersClient | null>(null);

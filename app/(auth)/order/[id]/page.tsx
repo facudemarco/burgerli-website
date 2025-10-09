@@ -14,17 +14,16 @@ import { useSession } from "@/app/context/SessionContext";
 type OrderStatus = "confirmed" | "preparing" | "on_route" | "delivered";
 
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
+// type PageProps = {
+//   params: {
+//     id: string;
+//   };
+// };
 
 
-export default function OrderIDPage({params}: PageProps) {
+export default function OrderIDPage() {
   const {OrderById} = useSession();
-  const {id}  = params;
-  console.log(id);
+
   
   const {cart} = useCart();
   // const prevStatus = useRef<OrderStatus | null>(null);
@@ -66,27 +65,27 @@ const STATUS_BY_STEP: OrderStatus[] = ["confirmed","preparing","on_route","deliv
 const currentStep = STEP_BY_STATUS[order.status] ?? 0;
 console.log(currentStep);
 
-  useEffect(() => {
-    async function fetchOrder() {
-      try {
-        // Esperar un poco para que el webhook procese la orden
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+  // useEffect(() => {
+  //   async function fetchOrder() {
+  //     try {
+  //       // Esperar un poco para que el webhook procese la orden
+  //       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const res = await OrderById(id);
+  //       const res = await OrderById(id);
 
-        if (!res) {
-          return;
-        }
-        setOrder(res);
-      } catch (error) {
-        console.error("Error obteniendo orden:", error);
-      }
-    }
+  //       if (!res) {
+  //         return;
+  //       }
+  //       setOrder(res);
+  //     } catch (error) {
+  //       console.error("Error obteniendo orden:", error);
+  //     }
+  //   }
 
-      fetchOrder();
+  //     fetchOrder();
 
-    fetchOrder();
-  }, []);
+  //   fetchOrder();
+  // }, []);
 
 
 // useEffect(() => {
