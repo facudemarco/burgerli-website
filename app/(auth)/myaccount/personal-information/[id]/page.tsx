@@ -16,10 +16,9 @@ const pattaya = Pattaya({
   subsets: ["latin"],
 });
 
-type Props = { params: { id: string } };
 
 
-export default function PersonalInformationPage({ params }: Props) {
+export default function PersonalInformationPage({params}: {params: {id: string}}) {
   const { userById } = useSession();
   const { id } = params;
   const [user, setUser] = useState<UsersClient | null>(null);
