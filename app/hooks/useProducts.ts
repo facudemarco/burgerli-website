@@ -7,7 +7,9 @@ export default function useAuth() {
       const response = await axios.get(
         "https://api-burgerli.iwebtecnology.com/api/burgers",
       );
-
+      if (!response) {
+        return null;
+      }
       if (response.status === 200) {
         return response.data;
       }
@@ -25,33 +27,26 @@ export default function useAuth() {
     }
   };
 
-  const createOrder = async (order: Orders) => {
-    try {
-      const response = await axios.post(
-        "https://api-burgerli.iwebtecnology.com/api/createOrder", order,{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+  const createOrder = async (order) => {
+    const response = await fetch(
+      "https://api-burgerli.iwebtecnology.com/api/createOrder",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order), // <-- objeto, NO array
+      },
+    );
 
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (error) {
-      console.log(error);
-      if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 400) {
-          console.error("Invalid username or password");
-        } else {
-          console.error(error);
-        }
-      } else {
-        console.error("An unexpected error occurred");
-      }
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(
+        `Error API externa: ${response.status} ${response.statusText} – ${err}`,
+      );
     }
 
+    const createdOrder = await response.json();
+    console.log("✅ Orden creada exitosamente:", createdOrder);
+    return createdOrder;
   };
   const getOrder = async (id: string) => {
     try {
@@ -61,13 +56,13 @@ export default function useAuth() {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.status === 200) {
         return response.data;
       }
-    }catch (error) {
+    } catch (error) {
       console.log(error);
       if (axios.isAxiosError(error) && error.response) {
         if (error.response.status === 400) {
@@ -79,6 +74,6 @@ export default function useAuth() {
         console.error("An unexpected error occurred");
       }
     }
-  }
-  return {getBurgers, getOrder, createOrder};
+  };
+  return { getBurgers, getOrder, createOrder };
 }

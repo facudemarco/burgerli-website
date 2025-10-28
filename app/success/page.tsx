@@ -7,145 +7,122 @@ import { Orders } from "@/types";
 export const dynamic = "force-dynamic"; // evita SSG
 
 export default function SuccessPage() {
-  return <Suspense fallback={<div>Loading...</div>}>
-    <Content />
-  </Suspense>;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Content />
+    </Suspense>
+  );
 }
 
 function Content() {
-  // const { session } = useSession();
+  const { session, loading: sessionLoading } = useSession();
   const sp = useSearchParams();
   const router = useRouter();
-  const id = sp.get("order_id");
   const paymentId = sp.get("payment_id");
   const status = sp.get("status");
   const { OrderById } = useSession();
   const [order, setOrder] = useState<Orders>();
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [orderId, setOrderId] = useState<string | null>(null);
+
+  function parseBrokenJsonArray(arr: string[]) {
+    // 1️⃣ Limpiar posibles llaves sobrantes al inicio o final de los fragmentos
+    const cleaned = arr.map((str) =>
+      str
+        .replace(/^{/, "") // elimina { al inicio
+        .replace(/}$/, "") // elimina } al final
+        .trim(),
+    );
+
+    // 2️⃣ Unir los fragmentos en una cadena JSON válida
+    const jsonString = `{${cleaned.join(",")}}`;
+
+    // 3️⃣ Intentar parsear el JSON a objeto
+    try {
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.log(error);
+      console.error("❌ Error al convertir a JSON:");
+      console.error("Cadena generada:", jsonString);
+      return null;
+    }
+  }
 
   useEffect(() => {
-    async function fetchOrder() {
+    async function fetchOrderId() {
+      if (!paymentId || status !== "approved") {
+        setLoading(false);
+        return;
+      }
+
+      // Esperar a que la verificación de sesión termine
+      if (sessionLoading) {
+        return;
+      }
+
       try {
         // Esperar un poco para que el webhook procese la orden
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const res = await OrderById(id);
+        const response = await fetch(
+          `/api/orders/temp?payment_id=${paymentId}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          },
+        );
 
-        if (!res) {
-          setNotFound(true);
-          return;
+        const data = await response.json();
+
+        if (data.order_id) {
+          setOrderId(data.order_id);
+          console.log("Order ID encontrado:", data.order_id);
+
+          // Solo redirigir si hay sesión iniciada
+          if (session) {
+            setTimeout(() => {
+              router.push(`/order/${data.order_id}`);
+            }, 3000);
+          }
+        } else {
+          console.log("Order ID no encontrado aún, reintentando...");
+          // Reintentar después de 3 segundos si no se encuentra
+          setTimeout(fetchOrderId, 3000);
         }
-        setOrder(res);
-        setLoading(false);
       } catch (error) {
-        console.error("Error obteniendo orden:", error);
+        console.error("Error obteniendo order ID:", error);
+        setNotFound(true);
+      } finally {
         setLoading(false);
       }
     }
 
-    if (paymentId && status === "approved") {
-      fetchOrder();
-    } else if (status) {
-      setLoading(false);
+    fetchOrderId();
+  }, [paymentId, status, router, session, sessionLoading]);
+
+  // Efecto para redirigir automáticamente cuando se obtenga el orderId (solo si hay sesión)
+  useEffect(() => {
+    if (orderId && session) {
+      const timer = setTimeout(() => {
+        router.push(`/order/${orderId}`);
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-    fetchOrder();
-  }, [router, paymentId, status]);
+  }, [orderId, router, session, sessionLoading]);
 
-  // useEffect(() => {
-  //   if (!order?.id_order) return;
-
-  //   if (!session) return;
-
-  //   const t = setTimeout(() => {
-  //     router.replace(`/order/${order.id_order}`);
-  //   }, 3000);
-  //   return () => clearTimeout(t);
-  // }, [order?.id_order]);
-
-  // Función para notificar a la tienda por WhatsApp
-  const notifyStore = (order: any) => {
-    // Mapeo de sucursales a números de WhatsApp
-    const WHATSAPP_NUMBERS = {
-      GERLI: "+5491157395035",
-      LANUS: "+5491171372910",
-      WILDE: "+5491160243691",
-    };
-
-    // Obtener el número según la local, con fallback al primero
-    const getSucursalNumber = (local: string) => {
-      const sucursalUpper = local.toUpperCase();
-
-      // Buscar coincidencias exactas o parciales
-      if (sucursalUpper.includes("GERLI")) return WHATSAPP_NUMBERS.GERLI;
-      if (sucursalUpper.includes("LANUS") || sucursalUpper.includes("LANÚS"))
-        return WHATSAPP_NUMBERS.LANUS;
-      if (sucursalUpper.includes("WILDE")) return WHATSAPP_NUMBERS.WILDE;
-
-      // Fallback por defecto
-      return WHATSAPP_NUMBERS.GERLI;
-    };
-
-    const WHATSAPP_NUMBER = getSucursalNumber(order.local);
-
-    // Debug: mostrar qué sucursal y número se está usando
-    console.log("🏪 Sucursal detectada:", order.local);
-    console.log("📱 Número de WhatsApp seleccionado:", WHATSAPP_NUMBER);
-
-    // Formatear la fecha
-    const orderDate = new Date(order.createdAt).toLocaleString("es-AR", {
-      timeZone: "America/Argentina/Buenos_Aires",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    // Crear mensaje de WhatsApp
-    const message = `🍔 *NUEVA ORDEN - BURGERLI* 🍔
-  
-  📋 *Orden ID:* ${order.id}
-  📅 *Fecha:* ${orderDate}
-  💰 *Total:* $${order.price.toLocaleString("es-AR")}
-  
-  👤 *CLIENTE:*
-  • Nombre: ${order.name}
-  • Email: ${order.email}
-  • Teléfono: ${order.phone}
-  • Tipo: ${
-    order.delivery_mode === "delivery" ? "🛵 Delivery" : "🏪 Retiro en local"
-  }
-  ${
-    order.delivery_mode === "delivery"
-      ? `• Dirección: ${order.address}`
-      : `• Sucursal: ${order.local}`
-  }
-  
-  ${order.notes ? `📋 *Notas:* ${order.notes}` : ""}
-  ${order.sin ? `🚫 *Sin:* ${order.sin}` : ""}
-  
-  ⚡ *¡Pedido listo para preparar!*`;
-
-    // Codificar el mensaje para URL
-    const encodedMessage = encodeURIComponent(message);
-
-    // Crear URL de WhatsApp
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER.replace(
-      "+",
-      ""
-    )}&text=${encodedMessage}`;
-
-    // Abrir WhatsApp en una nueva ventana
-    window.open(whatsappUrl, "_blank");
-  };
-
-  if (loading) {
+  if (loading || sessionLoading) {
     return (
       <main className="h-[60vh] flex items-center justify-center flex-col gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         <p className="text-xl font-bold">Procesando tu pago...</p>
         <p className="text-gray-600">Creando tu orden de compra</p>
+        {orderId && (
+          <p className="text-green-600 font-semibold">
+            ¡Orden #{orderId} creada! Redirigiendo...
+          </p>
+        )}
       </main>
     );
   }
@@ -188,61 +165,78 @@ function Content() {
       <div className="text-green-500 text-6xl">✅</div>
       <h1 className="text-3xl font-bold text-green-600">¡Pago exitoso!</h1>
 
-      {order && (
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-          <h2 className="text-xl font-semibold mb-4">Resumen de tu orden</h2>
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center">
+        <h2 className="text-xl font-semibold mb-4">
+          ¡Tu orden ha sido procesada!
+        </h2>
 
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Orden ID:</span>
-              <span className="font-mono">{order.id_order}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Cliente:</span>
-              <span>{order.name}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Total:</span>
-              <span className="font-bold">
-                ${order.price.toLocaleString("es-AR")}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-600">Entrega:</span>
-              <span>
-                {order.delivery_mode === "delivery" ? "Delivery" : "Retiro"}
-              </span>
-            </div>
-
-            {order.address && (
+        {orderId ? (
+          <>
+            <div className="space-y-2 text-sm mb-6">
               <div className="flex justify-between">
-                <span className="text-gray-600">Dirección:</span>
-                <span className="text-right text-xs">{order.address}</span>
+                <span className="text-gray-600">Orden ID:</span>
+                <span className="font-mono">#{orderId}</span>
               </div>
-            )}
-          </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Payment ID:</span>
+                <span className="font-mono text-xs">{paymentId}</span>
+              </div>
+            </div>
 
-          {/* <p>Haz click en el botón para notificar a la tienda sobre la orden</p> */}
-
-          <div className="mt-6 space-y-3">
-            <button
-              onClick={() => notifyStore(order)}
-              className="w-full bg-green-500 hover:bg-green-600 text-black cursor-pointer font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-            >
-              <span className="">📱</span>
-              CLICK AQUÍ PARA ENVIAR TU PEDIDO
-            </button>
-            {/* {session && (
-        <p className="text-xs text-gray-500 text-center">
-          Serás redirigido a los detalles de tu orden en unos segundos...
-        </p>
-      )} */}
-          </div>
-        </div>
-      )}
+            <div className="space-y-3">
+              {session ? (
+                <>
+                  <button
+                    onClick={() => router.push(`/order/${orderId}`)}
+                    className="w-full bg-primary text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary/80 transition-colors duration-200"
+                  >
+                    Ver detalles de mi orden
+                  </button>
+                  <p className="text-xs text-gray-500">
+                    Serás redirigido automáticamente en unos segundos...
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-green-600 font-semibold mb-4">
+                    ¡Tu pago ha sido procesado exitosamente!
+                  </p>
+                  <p className="text-gray-700 mb-4 text-sm">
+                    Tu pedido será procesado y enviado según el método de
+                    entrega seleccionado.
+                  </p>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => router.push("/login")}
+                      className="w-full bg-primary text-white font-semibold py-3 px-4 rounded-lg hover:bg-primary/80 transition-colors duration-200"
+                    >
+                      Iniciar sesión para ver mi orden
+                    </button>
+                    <button
+                      onClick={() => router.push("/")}
+                      className="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                    >
+                      Continuar comprando
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-3">
+                    💡 Crea una cuenta o inicia sesión para hacer seguimiento de
+                    tus pedidos
+                  </p>
+                </>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="animate-pulse mb-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            </div>
+            <p className="text-gray-600">Finalizando tu orden...</p>
+          </>
+        )}
+      </div>
     </main>
   );
 }

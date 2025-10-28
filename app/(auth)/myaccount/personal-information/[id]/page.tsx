@@ -21,6 +21,8 @@ export default function PersonalInformationPage({params}: {params: Promise<{ id:
 }){
   const { userById } = useSession();
   const { id } = use(params);
+  console.log(id);
+  
   const [user, setUser] = useState<UsersClient | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [addAddress, setAddAddress] = useState<boolean>(false);
@@ -32,7 +34,7 @@ export default function PersonalInformationPage({params}: {params: Promise<{ id:
       setLoading(false);
     };
     getUser();
-  }, []);
+  }, [id]);
 
   if (loading)
     return (
@@ -101,14 +103,14 @@ export default function PersonalInformationPage({params}: {params: Promise<{ id:
           {user?.addresses?.length === 0 ? (
             <p>No tenes direcciones guardadas aún.</p>
           ) : (
-            user?.addresses?.map((address: Address) => (
-              <li>
+            user?.addresses?.map((ad) => (
+              <li key={user?.id}>
                 <div className="flex justify-between pb-2 items-center">
                   <div className="flex gap-3">
                     <Ubicacion fill="white" />
                     <div className="flex flex-col justify-center">
-                      <p>{address.address}</p>
-                      <small>{address.type}</small>
+                      <p>{ad}</p>
+                      <small>{ad}</small>
                     </div>
                   </div>
                 </div>

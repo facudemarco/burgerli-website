@@ -19,7 +19,6 @@ export default function Productos() {
     const getProducts = async () => {
       const burgers = await getBurgers();
       setBurgers(burgers);
-      console.log(burgers);
     };
     getProducts();
   }, []);

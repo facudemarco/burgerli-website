@@ -22,8 +22,8 @@ export default function Header() {
     const handleLogout = async () => {
         setMenu(false);
         await logoutUser();
-        router.refresh();
         router.push('/');
+        window.location.reload();
     }
     
 
@@ -56,7 +56,7 @@ export default function Header() {
                 <section>
                     <div className="flex gap-5 items-center">
                         <Logo width={40}/>
-                        <span>{session.username || 'Perfil'}</span>
+                        <span>{session.username}</span>
                         <button onClick={handleClick} className={menu ? 'rotate-180 cursor-pointer transition-all' : 'cursor-pointer transition-all'}>
                         <ArrowDown />
                         </button>
@@ -79,7 +79,7 @@ export default function Header() {
                 <ul className='flex gap-1 flex-col justify-between items-start py-2 pl-3 pr-5 bg-amber-950 text-white'>
                     <Link onClick={handleShow} href="/my-account/favorites">Mis favoritos</Link>
                     <Link onClick={handleShow} href="/my-account/order-history">Historial de compras</Link>
-                    <Link onClick={handleShow} href={`/myaccount/personal-information/${session?.user_id}`}>Informacion personal</Link>
+                    <Link onClick={handleShow} href={`/myaccount/personal-information/${session?.user_id_user_client}`}>Informacion personal</Link>
                 </ul>
                 <button onClick={handleLogout} className='text-center pl-3 cursor-pointer text-white hover:text-gray-300 transition-colors'>
                     Cerrar sesion

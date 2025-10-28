@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>burgerli lanus</name>
+    <description>area de entrega lanus</description>
+    <Style id="poly-9C27B0-1200-77-normal">
+      <LineStyle>
+        <color>ffb0279c</color>
+        <width>1.2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4db0279c</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Style id="poly-9C27B0-1200-77-highlight">
+      <LineStyle>
+        <color>ffb0279c</color>
+        <width>1.8</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4db0279c</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="poly-9C27B0-1200-77">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-9C27B0-1200-77-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-9C27B0-1200-77-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name>Capa sin nombre</name>
+      <Placemark>
+        <name>burgerli lanus 1</name>
+        <description>area de entrega principal</description>
+        <styleUrl>#poly-9C27B0-1200-77</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <tessellate>1</tessellate>
+              <coordinates>
+                -58.4044142,-34.6792868,0
+                -58.4053747,-34.6854536,0
+                -58.4042589,-34.6880297,0
+                -58.4022848,-34.6897235,0
+                -58.4081642,-34.6961102,0
+                -58.4123055,-34.7007323,0
+                -58.4196441,-34.709129,0
+                -58.4051601,-34.7282302,0
+                -58.4133355,-34.7324273,0
+                -58.4129064,-34.7328505,0
+                -58.3978431,-34.7353369,0
+                -58.3903329,-34.7364655,0
+                -58.39029,-34.7357601,0
+                -58.3901612,-34.7318101,0
+                -58.386728,-34.7324097,0
+                -58.3861272,-34.7317748,0
+                -58.3832089,-34.7338557,0
+                -58.3811919,-34.7321628,0
+                -58.3770291,-34.734949,0
+                -58.3734723,-34.7317838,0
+                -58.3702965,-34.7289623,0
+                -58.3660479,-34.7252941,0
+                -58.3578511,-34.718063,0
+                -58.3724852,-34.7074093,0
+                -58.3715411,-34.7067037,0
+                -58.3722277,-34.7062098,0
+                -58.3770342,-34.7022937,0
+                -58.3805962,-34.6989066,0
+                -58.3859177,-34.6945313,0
+                -58.3896514,-34.6918496,0
+                -58.3997794,-34.684651,0
+                -58.4044142,-34.6792868,0
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

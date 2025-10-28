@@ -2,9 +2,8 @@
 import { NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 
-
-const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN; 
-const FRONT_URL = "https://imido-curliest-cole.ngrok-free.dev"
+const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
+const FRONT_URL = "https://imido-curliest-cole.ngrok-free.dev"; // CAMBIAR A DOMIINIO REAL
 
 export async function POST(req) {
   try {
@@ -15,7 +14,7 @@ export async function POST(req) {
     if (!items.length || items.some((it) => it?.unit_price == null)) {
       return NextResponse.json(
         { error: true, message: "unit_price needed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -35,16 +34,15 @@ export async function POST(req) {
       })),
       metadata: {
         // Datos del cliente
-        order_id: order.id_order,
         name: order.name ?? null,
         email: order.email ?? null,
         phone: order.phone ?? null,
-        
+
         // Datos de entrega
         delivery_mode: order.delivery_mode ?? null,
         address: order.address ?? null,
         local: order.local ?? null,
-        
+
         // Datos del pedido
         order_notes: order.order_notes ?? null,
         coupon: order.coupon ?? "",
@@ -53,13 +51,13 @@ export async function POST(req) {
       },
       auto_return: "approved",
       back_urls: {
-        success: `${FRONT_URL}/success/?order_id=${order.id_order}`,
+        success: `${FRONT_URL}/success`,
         failure: `${FRONT_URL}/failure`,
         pending: `${FRONT_URL}/pending`,
       },
-      notification_url: "https://imido-curliest-cole.ngrok-free.dev/api/mercadopago/webhook",
+      notification_url:
+        "https://imido-curliest-cole.ngrok-free.dev/api/mercadopago/webhook",
     };
-
 
     const pref = await preference.create({ body: mpBody });
 
@@ -68,7 +66,7 @@ export async function POST(req) {
     console.error("MP create preference error:", error);
     return NextResponse.json(
       { error: true, message: error?.message ?? "Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -8,12 +8,12 @@ type LoginResult = { id: string };
 
 type Ctx = {
   loginUser: (username: string, password: string) => Promise<LoginResult>;
-  registerUser: (username: string, password: string) => Promise<void>;
+  registerUser: (data: any) => Promise<void>;
   session: SessionUser | null;
   loading: boolean;
-  userById: (id: string) => Promise<any>;
+  userById: (id: string) => Promise<void>;
   logoutUser: () => Promise<void>;
-  OrderById: (id: any | string) => Promise<any>;
+  OrderById: (id:  string) => Promise<void>;
 };
 
 export const SessionContext = createContext<Ctx | null>(null);
@@ -30,24 +30,28 @@ export const SessionContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { login, register, getUserById, verifyCookie, logout ,getOrderById } = useAuth();
+  const { login,register ,getUserById, verifyCookie, logout ,getOrderById } = useAuth();
   const [session, setSession] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Iniciar en true para mostrar loading inicial
 
-  const loginUser = async (username: string, password: string) => {
+  const loginUser = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const res = await login({ username, password });
-      if (res.status !== 200) throw new Error("Credenciales inválidas");
+      const res = await login({ email, password });
+      // if (res.status !== 200) throw new Error("Credenciales inválidas");
 
-      const api = res.data as any;
-      const user = String(api.username ?? username);
+      const api = res.data;
+      const name = String(api.name ?? api.name);
       const id = String(api.user_id ?? api.id);
+      const emailUser = String(api.email ?? api.email);
+      const phone = String(api.phone ?? api.phone);
       if (!id) throw new Error("Falta user_id en la respuesta");
       
       const newSession = {
-        user_id: id,
-        username: user
+        user_id_user_client: id,
+        name: name,
+        email: emailUser,
+        phone: phone
       };
       
       // Actualizar la sesión inmediatamente
@@ -63,23 +67,31 @@ export const SessionContextProvider = ({
     }
   };
 
-  const registerUser = async (username: string, password: string) => {
+  const registerUser = async (data: any) => {
     setLoading(true);
+
     try {
-      const res = await register({ username, password });
-      if (!res || res.status !== 200) {
-        throw new Error("Error en el registro");
-      }
+      const res = await register(data);
+      console.log(res);
+
       
-      const { id } = res?.data;
-      if (id) {
-        const newSession = {
-          user_id: String(id),
-          username: username
-        };
-        setSession(newSession);
-      }
-    } finally {
+      // if (!res || res.status !== 200) {
+      //   throw new Error("Error en el registro");
+      // }
+      
+      // const { id } = res?.data;
+      // if (id) {
+      //   const newSession = {
+      //     user_id: String(id),
+      //     username: username
+      //   };
+      //   setSession(newSession);
+      // }
+    }
+    catch (error) {
+      console.error("Error al registrar usuario:", error);
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -91,9 +103,12 @@ export const SessionContextProvider = ({
       
       if (response && response.status === 200 && response.data) {
         const userData = response.data;
+        
         const newSession = {
-          user_id: String(userData.user_id),
-          username: String(userData.username)
+          user_id_user_client: String(userData.user_id),
+          username: String(userData.username),
+          email: String(userData.email),
+          phone: String(userData.phone)
         };
         setSession(newSession);
         console.log("Sesión verificada:", newSession);

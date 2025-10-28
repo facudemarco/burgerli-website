@@ -12,16 +12,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "baseUrl": ".",
     "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "paths": {"@/*": ["./*", "src/*"]}
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/components/Logo.jsx", "app/components/Card.jsx", "app/api/mercadopago/createPreference/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx","types/**/*.d.ts", ".next/types/**/*.ts", "app/components/Logo.jsx", "app/components/Card.jsx", "app/api/mercadopago/createPreference/route.js"],
   "exclude": ["node_modules"]
 }

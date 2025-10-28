@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveOrderId } from "@/app/lib/OrderStore";
+import { cookies } from "next/headers";
+// import { saveOrderId } from "@/app/lib/OrderStore";
 
 const MP_TOKEN = process.env.MP_ACCESS_TOKEN!;
 
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     if (type === "payment") {
       // Procesar en background para no bloquear la respuesta
       handlePayment(id as string).catch((err) =>
-        console.error("[MP] Error procesando payment:", err)
+        console.error("[MP] Error procesando payment:", err),
       );
       return response;
     }
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     if (type === "merchant_order") {
       // Para Checkout Pro suele llegar este tipo
       handleMerchantOrder(id as string).catch((err) =>
-        console.error("[MP] Error procesando merchant_order:", err)
+        console.error("[MP] Error procesando merchant_order:", err),
       );
       return response;
     }
@@ -61,7 +62,7 @@ async function handlePayment(paymentId: string) {
       {
         headers: { Authorization: `Bearer ${MP_TOKEN}` },
         cache: "no-store",
-      }
+      },
     );
     const data = await r.json();
 
@@ -75,7 +76,7 @@ async function handlePayment(paymentId: string) {
         const order = await createOrderFromPayment(data);
         console.log(
           "🎉 ORDEN CREADA EN API EXTERNA:",
-          order.id || order._id || order.order_id || order.id_order
+          order.id || order._id || order.order_id || order.id_order,
         );
 
         const orderId =
@@ -88,7 +89,25 @@ async function handlePayment(paymentId: string) {
         console.log("🧾 ORDEN CREADA:", order);
 
         if (orderId) {
-          await saveOrderToLocalStorage(orderId);
+          // Guardar orden temporal usando payment_id
+          try {
+            await fetch(
+              `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/orders/temp`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  payment_id: paymentId,
+                  order_id: orderId,
+                }),
+              },
+            );
+            console.log(
+              `📋 Orden temporal guardada: payment_id=${paymentId}, order_id=${orderId}`,
+            );
+          } catch (error) {
+            console.error("Error guardando orden temporal:", error);
+          }
         }
 
         // Enviar orden por WhatsApp a los dueños de la tienda
@@ -115,7 +134,6 @@ async function createOrderFromPayment(paymentData: any) {
 
     // Crear orden usando el formato de tu API externa
     const orderData = {
-      id_order: metadata.order_id,
       payment_method: paymentData.order.type ?? "Efectivo",
       delivery_mode: metadata.delivery_mode ?? "delivery",
       price: Number(metadata.price ?? paymentData.transaction_amount),
@@ -130,12 +148,8 @@ async function createOrderFromPayment(paymentData: any) {
       address: metadata.address ?? "Dirección no especificada",
       coupon: metadata.coupon ?? null,
       // 👇 Parche: productos como strings JSON
-      products: Array.isArray(metadata.products)
-        ? metadata.products.map((p: any) => JSON.stringify(p))
-        : [],
+      products: metadata.products.map((p: any) => JSON.stringify(p)),
     };
-
-    console.log("📦 Creando orden en API externa:", orderData);
 
     // Llamar a la API externa para crear la orden
     const response = await fetch(
@@ -144,13 +158,13 @@ async function createOrderFromPayment(paymentData: any) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData), // <-- objeto, NO array
-      }
+      },
     );
 
     if (!response.ok) {
       const err = await response.text();
       throw new Error(
-        `Error API externa: ${response.status} ${response.statusText} – ${err}`
+        `Error API externa: ${response.status} ${response.statusText} – ${err}`,
       );
     }
 
@@ -176,22 +190,19 @@ async function createOrderFromPayment(paymentData: any) {
   }
 }
 
-
 // Función para guardar la orden en el endpoint local (para /success)
-async function saveOrderToLocalStorage(id: string) {
+async function saveIdOrder(id: string) {
   try {
-    console.log("💾 Guardando orden en storage local para /success:", id);
-
-    // Guardar en nuestro endpoint temporal para que /success pueda acceder
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-    await fetch(`${baseUrl}/api/orders/last`, {
+    await fetch(`/api/orders/last`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: id }), // 👈 objeto con order_id
+      body: JSON.stringify({ order_id: id }),
+      // credenciales para que set-cookie funcione en el mismo dominio
+      credentials: "same-origin",
     });
+    console.log("Orden guardada exitosamente");
   } catch (e) {
-    console.error("Error guardando orden en storage local:", e);
-    // No lanzar error aquí para no interrumpir el flujo principal
+    console.error("No pude guardar last_order_id:", e);
   }
 }
 
@@ -222,21 +233,21 @@ async function sendOrderToWhatsApp(order: any) {
     };
 
     const WHATSAPP_NUMBER = getSucursalNumber(
-      order.local || order.delivery?.sucursal || order.sucursal
+      order.local || order.delivery?.sucursal || order.sucursal,
     );
 
     // Debug: mostrar qué sucursal y número se está usando
     console.log(
       "🏪 Sucursal detectada en webhook:",
-      order.local || order.metadata.local || order.sucursal
+      order.local || order.metadata.local || order.sucursal,
     );
     console.log(
       "📱 Número de WhatsApp seleccionado en webhook:",
-      WHATSAPP_NUMBER
+      WHATSAPP_NUMBER,
     );
 
     // Formatear la fecha
-    const orderDate = new Date(order.createdAt).toLocaleString("es-AR", {
+    const orderDate = new Date().toLocaleString("es-AR", {
       timeZone: "America/Argentina/Buenos_Aires",
       year: "numeric",
       month: "2-digit",
@@ -244,6 +255,7 @@ async function sendOrderToWhatsApp(order: any) {
       hour: "2-digit",
       minute: "2-digit",
     });
+    console.log("ESTA ES LA ORDEN QUE VA A WPP: ", order);
 
     // Crear mensaje de WhatsApp
     const message = `🍔 *NUEVA ORDEN - BURGERLI* 🍔
@@ -253,30 +265,32 @@ async function sendOrderToWhatsApp(order: any) {
 💰 *Total:* $${order.price}
 
 👤 *CLIENTE:*
-• Nombre: ${order.name}
-• Email: ${order.email}
-• Teléfono: ${order.phone}
+• Nombre: ${order.metadata.name}
+• Email: ${order.metadata.email}
+• Teléfono: ${order.metadata.phone}
 
 🚚 *ENTREGA:*
-• Sucursal: ${order.local}
+• Sucursal: ${order.metadata.local}
 • Tipo: ${
-      order.delivery_mode === "pickup" ? "🏪 Retiro en local" : "🛵 Delivery"
+      order.metadata.delivery_mode === "pickup"
+        ? "🏪 Retiro en local"
+        : "🛵 Delivery"
     }
 ${
-  order.delivery_mode === "pickup"
-    ? `• Sucursal: ${order.local}`
-    : `• Dirreción: ${order.address}`
+  order.metadata.delivery_mode === "pickup"
+    ? `• Sucursal: ${order.metadata.local}`
+    : `• Dirreción: ${order.metadata.address}`
 }
 
 🛒 *PEDIDO:*
 ${
-  order.products && order.products.length > 0
-    ? order.products
+  order.metadata.products && order.metadata.products.length > 0
+    ? order.metadata.products
         .map(
           (item: any) =>
             `• ${item.name} x${item.quantity} - $${(
               item.price * item.quantity
-            ).toLocaleString("es-AR")}`
+            ).toLocaleString("es-AR")}`,
         )
         .join("\n")
     : "• Pedido Burgerli"
@@ -302,7 +316,7 @@ ${
     // Crear URL de WhatsApp
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER!.replace(
       "+",
-      ""
+      "",
     )}&text=${encodedMessage}`;
 
     console.log("📱 Enviando orden por WhatsApp:", {
@@ -339,7 +353,7 @@ async function handleMerchantOrder(merchantOrderId: string) {
       {
         headers: { Authorization: `Bearer ${MP_TOKEN}` },
         cache: "no-store",
-      }
+      },
     );
     const mo = await r.json();
     console.log("[MP] merchant_order", merchantOrderId, mo.order_status);

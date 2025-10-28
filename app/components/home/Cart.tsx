@@ -31,7 +31,7 @@ export default function Cart() {
   // MODAL
   const [open, setOpen] = useState(false);
   // DELIVERY STATES
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<[]>([]);
   const [addressInput, setAddressInput] = useState("");
   const [instructions, setInstructions] = useState("");
   const [isDeliveryChecked, setIsDeliveryChecked] = useState(false);
@@ -57,13 +57,18 @@ export default function Cart() {
 
   useEffect(() => {
     const getUser = async () => {
-      const user = await userById(session!.user_id);
+      if (!session) return;
+      console.log(session);
+      
+      const user = await userById(session.user_id_user_client);
+      console.log(user);
+      
       if (!user) return;
-      setAddresses(user?.addresses);
+      setAddresses(user?.[0].addresses);
     };
     getUser();
-  }, []);
-  console.log("user", addresses);
+  }, [userById, session]);
+  console.log("Direccines: ", addresses);
 
   useEffect(() => {
     if (mode === "pickup") {
@@ -255,11 +260,11 @@ export default function Cart() {
         {mode === "delivery" && (
           <>
             <p className="text-start font-bold text-lg my-4">
-              Seleccioná tu sucursal mas cercana
+              Seleccioná tu sucursal mas cercana <small>(Obligatorio)</small>
             </p>
             <select
               onChange={(e) => setSucursal(e.target.value)}
-              className="w-full"
+              className="w-full border rounded-md border-white p-1"
             >
               <option disabled>Seleccione una sucursal</option>
               <option className="text-black" value="Gerli">
@@ -272,35 +277,33 @@ export default function Cart() {
                 Lanus
               </option>
             </select>
+            <p className="text-start font-bold text-lg my-4">
+              Indicá la dirección de entrega
+            </p>
             <div className="flex flex-col gap-2">
-              {addresses?.length > 0 ? <p>ss</p> : 
-              addresses.map((address: Address) => (
+              {addresses?.length === 0 && session ? <p>No tienes direcciones guardadas en tu perfil.</p> : 
+              addresses.map((address) => (
                 <div
-                  key={address.address}
-                  className="flex justify-between items-center"
+                  key={address}
+                  className="flex pb-5 justify-between items-center"
                 >
                   <div className="flex gap-3">
                     <Ubicacion fill={"white"} />
                     <div className="flex flex-col justify-center">
-                      {/* ACA VAN LAS DIRECCIONES GUARDADAS DEL USUARIO */}
-                      <p>{address.address}</p>
-                      <small>{address.type}</small>
+                      <p>{address}</p>
                     </div>
                   </div>
                   <input
                     type="radio"
                     name="address"
                     className="rounded-xl"
-                    checked={selectedAddress === address.address}
-                    onChange={() => setSelectedAddress(address.address)}
+                    checked={selectedAddress === address}
+                    onChange={() => setSelectedAddress(address)}
                   />
                 </div>
               ))
               } 
             </div>
-            <p className="text-start font-bold text-lg my-4">
-              Indicá la dirección de entrega
-            </p>
             {!session && (
               <div className=" py-1 my-3">
                 {/* INPUT PARA AGREGAR NUEVA DIRECCION TEMPORARIA  */}
