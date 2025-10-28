@@ -59,13 +59,15 @@ export type Orders = {
   delivery_mode: string;
   price: number;
   status: string;
-  order_notes?: string;
+  order_notes?: string | null;
   local: string;
   name: string;
   phone: number;
   email: string;
-  address: string;
-  coupon?: string;
+  address: string | null;
+  coupon?: string | null;
+  fries?: string | null;
+  drinks?: string | null;
   products: Products[];
 };
 
@@ -93,7 +95,7 @@ export type UsersClient = {
   password: string;
   locality: string;
   favorites?: string[];
-  address: string[] | string;
+  addresses: string[] | string;
   notes?: string;
 };
 

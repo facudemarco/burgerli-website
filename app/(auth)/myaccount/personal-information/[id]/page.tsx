@@ -1,10 +1,10 @@
 "use client";
 import Ubicacion from "@/app/components/icons/Ubicacion";
 import { useSession } from "@/app/context/SessionContext";
-import { Address, UsersClient } from "@/types";
+import { UsersClient } from "@/types";
 import { Inter, Pattaya } from "next/font/google";
 import { useEffect, useState } from "react";
-import { use } from 'react'
+import { use } from "react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,12 +17,15 @@ const pattaya = Pattaya({
   subsets: ["latin"],
 });
 
-export default function PersonalInformationPage({params}: {params: Promise<{ id: string }>
-}){
+export default function PersonalInformationPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { userById } = useSession();
   const { id } = use(params);
   console.log(id);
-  
+
   const [user, setUser] = useState<UsersClient | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [addAddress, setAddAddress] = useState<boolean>(false);
@@ -103,8 +106,8 @@ export default function PersonalInformationPage({params}: {params: Promise<{ id:
           {user?.addresses?.length === 0 ? (
             <p>No tenes direcciones guardadas aún.</p>
           ) : (
-            user?.addresses?.map((ad) => (
-              <li key={user?.id}>
+            (user?.addresses as string[])?.map((ad) => (
+              <li key={user?.id_user_client}>
                 <div className="flex justify-between pb-2 items-center">
                   <div className="flex gap-3">
                     <Ubicacion fill="white" />
@@ -118,9 +121,12 @@ export default function PersonalInformationPage({params}: {params: Promise<{ id:
               </li>
             ))
           )}
-          <button onClick={() => setAddAddress(!addAddress)} className="bg-tertiary cursor-pointer text-black font-bold px-3 py-1 my-3">
+          <button
+            onClick={() => setAddAddress(!addAddress)}
+            className="bg-tertiary cursor-pointer text-black font-bold px-3 py-1 my-3"
+          >
             {/* INPUT PARA AGREGAR NUEVA DIRECCION TEMPORARIA  */}
-              {addAddress ? "Cancelar" : "Agregar nueva direccion"}
+            {addAddress ? "Cancelar" : "Agregar nueva direccion"}
           </button>
         </ul>
         {addAddress && (

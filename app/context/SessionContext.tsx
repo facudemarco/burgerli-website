@@ -13,7 +13,7 @@ type Ctx = {
   loading: boolean;
   userById: (id: string) => Promise<void>;
   logoutUser: () => Promise<void>;
-  OrderById: (id:  string) => Promise<void>;
+  OrderById: (id: string) => Promise<void>;
 };
 
 export const SessionContext = createContext<Ctx | null>(null);
@@ -30,7 +30,8 @@ export const SessionContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { login,register ,getUserById, verifyCookie, logout ,getOrderById } = useAuth();
+  const { login, register, getUserById, verifyCookie, logout, getOrderById } =
+    useAuth();
   const [session, setSession] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Iniciar en true para mostrar loading inicial
 
@@ -46,21 +47,21 @@ export const SessionContextProvider = ({
       const emailUser = String(api.email ?? api.email);
       const phone = String(api.phone ?? api.phone);
       if (!id) throw new Error("Falta user_id en la respuesta");
-      
+
       const newSession = {
         user_id_user_client: id,
-        name: name,
+        username: name,
         email: emailUser,
-        phone: phone
+        phone: phone,
       };
-      
+
       // Actualizar la sesión inmediatamente
       setSession(newSession);
       console.log("session cuando se hace login: ", newSession);
-      
+
       // Pequeña pausa para asegurar que el estado se actualice
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       return { id };
     } finally {
       setLoading(false);
@@ -74,11 +75,10 @@ export const SessionContextProvider = ({
       const res = await register(data);
       console.log(res);
 
-      
       // if (!res || res.status !== 200) {
       //   throw new Error("Error en el registro");
       // }
-      
+
       // const { id } = res?.data;
       // if (id) {
       //   const newSession = {
@@ -87,11 +87,9 @@ export const SessionContextProvider = ({
       //   };
       //   setSession(newSession);
       // }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error al registrar usuario:", error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -100,20 +98,19 @@ export const SessionContextProvider = ({
   const checkAuthentication = async () => {
     try {
       const response = await verifyCookie();
-      
+
       if (response && response.status === 200 && response.data) {
         const userData = response.data;
-        
+
         const newSession = {
           user_id_user_client: String(userData.user_id),
           username: String(userData.username),
           email: String(userData.email),
-          phone: String(userData.phone)
+          phone: String(userData.phone),
         };
         setSession(newSession);
         console.log("Sesión verificada:", newSession);
         console.log("Asi queda la sesion del contexto: ", session);
-        
       } else {
         // Si no hay cookie válida, limpiar la sesión
         setSession(null);
@@ -142,10 +139,10 @@ export const SessionContextProvider = ({
     setLoading(true);
     try {
       const response = await logout();
-      
+
       // Limpiar la sesión independientemente de la respuesta del servidor
       setSession(null);
-      
+
       if (response?.status === 200) {
         toast.success("Sesión cerrada correctamente");
       }
@@ -180,7 +177,7 @@ export const SessionContextProvider = ({
       await checkAuthentication();
       setLoading(false);
     };
-    
+
     initializeAuth();
   }, []);
 
@@ -193,7 +190,7 @@ export const SessionContextProvider = ({
         loading,
         userById,
         OrderById,
-        logoutUser
+        logoutUser,
       }}
     >
       {children}

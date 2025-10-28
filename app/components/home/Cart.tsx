@@ -3,11 +3,11 @@ import Ubicacion from "../icons/Ubicacion";
 
 import { useRouter } from "next/navigation";
 import Cupon from "../Cupon";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Inter, Pattaya } from "next/font/google";
 import CartResponsive from "../CartResponsive";
 import { useCart } from "@/app/context/CartContext";
-import { Address, CartProduct } from "@/types";
+import { CartProduct } from "@/types";
 
 import { saveCheckoutDraft } from "@/app/lib/checkoutStorage";
 import checkIsOpen from "@/app/lib/CheckShopOpen";
@@ -59,11 +59,10 @@ export default function Cart() {
     const getUser = async () => {
       if (!session) return;
       console.log(session);
-      
-      const user = await userById(session.user_id_user_client);
+
+      const user = (await userById(session.user_id_user_client)) as any;
       console.log(user);
-      
-      if (!user) return;
+
       setAddresses(user?.[0].addresses);
     };
     getUser();
@@ -80,7 +79,7 @@ export default function Cart() {
 
   useEffect(() => {
     setTotalPricingCart(
-      totalPricing() + salePricing + deliveryPricing - salePricing
+      totalPricing() + salePricing + deliveryPricing - salePricing,
     );
   }, [deliveryPricing, totalPricing, salePricing]);
 
@@ -124,16 +123,16 @@ export default function Cart() {
       return;
     }
 
-    if(cartProducts.length === 0){
+    if (cartProducts.length === 0) {
       toast.error("No hay productos en el carrito");
       return;
-    } 
+    }
 
     if (isTakeAwayChecked) {
       // TakeAway: no necesita dirección
       saveCheckoutDraft(draft);
       router.push("/checkout");
-    }else if (isDeliveryChecked) {
+    } else if (isDeliveryChecked) {
       // Delivery: necesita dirección válida
       if (selectedAddress || addressInput) {
         saveCheckoutDraft(draft);
@@ -281,28 +280,30 @@ export default function Cart() {
               Indicá la dirección de entrega
             </p>
             <div className="flex flex-col gap-2">
-              {addresses?.length === 0 && session ? <p>No tienes direcciones guardadas en tu perfil.</p> : 
-              addresses.map((address) => (
-                <div
-                  key={address}
-                  className="flex pb-5 justify-between items-center"
-                >
-                  <div className="flex gap-3">
-                    <Ubicacion fill={"white"} />
-                    <div className="flex flex-col justify-center">
-                      <p>{address}</p>
+              {addresses?.length === 0 && session ? (
+                <p>No tienes direcciones guardadas en tu perfil.</p>
+              ) : (
+                addresses.map((address) => (
+                  <div
+                    key={address}
+                    className="flex pb-5 justify-between items-center"
+                  >
+                    <div className="flex gap-3">
+                      <Ubicacion fill={"white"} />
+                      <div className="flex flex-col justify-center">
+                        <p>{address}</p>
+                      </div>
                     </div>
+                    <input
+                      type="radio"
+                      name="address"
+                      className="rounded-xl"
+                      checked={selectedAddress === address}
+                      onChange={() => setSelectedAddress(address)}
+                    />
                   </div>
-                  <input
-                    type="radio"
-                    name="address"
-                    className="rounded-xl"
-                    checked={selectedAddress === address}
-                    onChange={() => setSelectedAddress(address)}
-                  />
-                </div>
-              ))
-              } 
+                ))
+              )}
             </div>
             {!session && (
               <div className=" py-1 my-3">

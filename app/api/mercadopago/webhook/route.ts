@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 // import { saveOrderId } from "@/app/lib/OrderStore";
 
 const MP_TOKEN = process.env.MP_ACCESS_TOKEN!;
@@ -187,22 +186,6 @@ async function createOrderFromPayment(paymentData: any) {
   } catch (error) {
     console.error("❌ Error creando orden en API externa:", error);
     throw error;
-  }
-}
-
-// Función para guardar la orden en el endpoint local (para /success)
-async function saveIdOrder(id: string) {
-  try {
-    await fetch(`/api/orders/last`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: id }),
-      // credenciales para que set-cookie funcione en el mismo dominio
-      credentials: "same-origin",
-    });
-    console.log("Orden guardada exitosamente");
-  } catch (e) {
-    console.error("No pude guardar last_order_id:", e);
   }
 }
 

@@ -27,7 +27,7 @@ export default function useAuth() {
     }
   };
 
-  const createOrder = async (order) => {
+  const createOrder = async (order: any) => {
     const response = await fetch(
       "https://api-burgerli.iwebtecnology.com/api/createOrder",
       {

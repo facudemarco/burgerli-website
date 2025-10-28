@@ -21,9 +21,8 @@ const pattaya = Pattaya({
 export default function CheckoutPage() {
   const { createOrder } = useProducts();
   const { session } = useSession();
-  const ORDER_KEY = "burgerli_order_id";
   const router = useRouter();
-  const [draft, setDraft] = useState<any>(null);
+  const [draft, setDraft] = useState<Orders | any>(null);
   const [cashLoading, setCashLoading] = useState(false);
   // const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<Orders>({
@@ -45,9 +44,9 @@ export default function CheckoutPage() {
     if (session) {
       setOrder((prev: any) => ({
         ...prev,
-        name: session.name, //
-        email: session.email, // ESTO HAY QUE CAMBIARLO POR DATOS DEL USUARIO || null (GETUSERBYID)
-        phone: session.phone, //
+        name: session.username || "",
+        email: session.email || "",
+        phone: session.phone || "",
       }));
       console.log("orden actualizada", session);
     }
@@ -55,23 +54,20 @@ export default function CheckoutPage() {
 
   // useEffect para rellenar el estado order con los datos del draft cuando esté disponible
   useEffect(() => {
-    // console.log("guardando id_order:", id);
-    // localStorage.setItem(ORDER_KEY, id);
-    // console.log("id_order guardado en localStorage:", id);
     if (draft) {
       setOrder({
         // id_order: id,
         payment_method: draft.payment_method || "efete",
-        delivery_mode: draft.delivery_mode || null,
-        price: draft.price || null,
+        delivery_mode: draft.delivery_mode,
+        price: draft.price,
         status: "Confirmado",
         order_notes: draft.order_notes || null,
-        local: draft.local || null,
-        name: draft.name || null,
-        phone: draft.phone || null,
-        email: draft.email || null,
+        local: draft.local,
+        name: draft.name,
+        phone: draft.phone,
+        email: draft.email,
         address: draft.address || null,
-        coupon: draft.cupon || null,
+        coupon: draft.coupon || null,
         products: draft.products,
       });
     }
@@ -172,7 +168,7 @@ export default function CheckoutPage() {
         phone: Number(order.phone),
         email: order.email,
         address: order.address || draft.address || "",
-        coupon: order.coupon || draft.cupon || null,
+        coupon: order.coupon || draft.coupon || null,
         products: (order.products || draft.products).map((p: any) =>
           JSON.stringify(p),
         ),
@@ -230,8 +226,7 @@ export default function CheckoutPage() {
                   <>
                     <Ubicacion fill="black" />
                     <div className="flex flex-col justify-center">
-                      <p>{draft.address.label || draft.address}</p>
-                      <small>{draft.address.street}</small>
+                      <p>{draft.address}</p>
                     </div>
                   </>
                 )}
@@ -300,7 +295,7 @@ export default function CheckoutPage() {
           </li>{" "}
           <li className="flex items-center text-gray-500 justify-between gap-3">
             <p>Cupon de descuento</p>
-            <p>{draft.cupon?.toLocaleString("es-AR") ?? "-"}</p>
+            <p>{draft.coupon?.toLocaleString("es-AR") ?? "-"}</p>
           </li>
           <hr />
           <li className="flex items-center justify-between gap-3">
