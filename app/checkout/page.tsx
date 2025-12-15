@@ -188,13 +188,13 @@ export default function CheckoutPage() {
           JSON.stringify(p),
         ),
       };
+      
       const createdOrder = await createOrder(newOrder);
       // Limpiar el draft del localStorage
       localStorage.removeItem("checkoutDraft:v1");
       toast.success("¡Orden creada exitosamente!");
       // Obtener el ID de la orden creada
-      const orderId =
-        createdOrder?.id_order || createdOrder?.id || createdOrder?.order_id;
+      const orderId = createdOrder?.id_order || createdOrder?.id || createdOrder?.order_id;
       // Si hay sesión y tenemos un ID de orden, redirigir a la página de orden
       if (session) {
         toast.success("Redirigiendo a seguimiento de envio...");

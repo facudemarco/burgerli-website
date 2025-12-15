@@ -1,24 +1,32 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "./Card";
 import { useCart } from "../context/CartContext";
 
-
+const getDefaultSize = (size_list) => {
+  const sizes = size_list ?? [];
+  if (sizes.includes("Simple")) return "Simple";
+  if (sizes.includes("Doble")) return "Doble";
+  if (sizes.includes("Triple")) return "Triple";
+  return "Doble"; // fallback
+};
 
 const ModalProducts = ({product}) => {
   const {addToCart} = useCart();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [size, setSize] = useState("Simple");
+  const [size, setSize] = useState(() => getDefaultSize(product?.size_list));
+  const sizePrices = { Simple: 0, Doble: 1100, Triple: 2000 };
   // const [extras, setExtras] = useState([]);
   const [without, setWithout] = useState([]);
-  const [totalPrice] = useState(Number(product.price));
+  const [totalPrice, setTotalPrice] = useState(() => Number(product?.price ?? 0));
+
   const [fries, setFries] = useState("Cheddar");
   const friesList = ["Cheddar","Cheddar y Panceta","Papas Burgerli"];
   
-
-  const sizePrices = { Simple: 0, Doble: 2000, Triple: 3000 };
-  const extraPrice = 100; 
-
+  useEffect(() => {
+    setSize(getDefaultSize(product?.size_list));
+    setTotalPrice(Number(product?.price ?? 0));
+  }, [product]);
 
   const openModal = (product) => {
     setSelectedProduct(product);
@@ -66,7 +74,8 @@ const ModalProducts = ({product}) => {
   // const extrasAddition = extras.reduce((sum) => sum + extraPrice, 0);
 
   const sizeAddition = sizePrices[size] ?? 0;
-  const finalPrice = totalPrice + sizeAddition // + extrasAddition;
+  const finalPrice = totalPrice + sizeAddition; // + extrasAddition
+  
 
   const handleAddToCart = () => {
     const productReady = {
@@ -106,16 +115,16 @@ const ModalProducts = ({product}) => {
                   X
                 </button>
 
-                <div className="bg-[#FCEDCC] py-5 overflow">
+                <div className="bg-gradient-to-t from-[#ffefdb] via-[#ffefdb] to-[#e4cb93] py-5 overflow">
                   <img
-                  src="/bg_burgers.jpg"
-                    // src={selectedProduct.main_image}
+                  // src="/bg_burgers.jpg"
+                    src={selectedProduct.main_image}
                     alt={selectedProduct.name}
                     className="h-96 mx-auto rounded-xl object-cover"
                   />
                 </div>
 
-                <div className="px-6 py-2 bg-[#FCEDCC]">
+                <div className="px-6 py-2 bg-[#ffefdb]">
                   <h2 className="text-2xl font-bold text-black mb-2">
                     {selectedProduct.name}
                   </h2>
@@ -131,7 +140,8 @@ const ModalProducts = ({product}) => {
                   </h3>
                   <hr className="border-tertiary border-[1px]" />
                   <div className="flex flex-col justify-between items-start mt-2 gap-2">
-                    {selectedProduct.size_list.map((s) => (
+                    {selectedProduct.size_list.map((s) => 
+                      (
                       <div key={s} className="flex justify-between text-white font-light items-center w-full gap-2">
                         <p>{s}</p>
                         <input

@@ -7,9 +7,10 @@ export default function Aside() {
   return (
     <aside className="min-w-60 hidden xl:block bg-primary text-white">
       <ul className="flex flex-col gap-5 p-4">
-        <Link href="/myaccount/favorites">Mis favoritos</Link>
-        <Link href="/myaccount/order-history">Historial de pedidos</Link>
-        <Link
+        {/* <Link href="/myaccount/favorites">Mis favoritos</Link> */}
+        <p className="text-gray-400">Mis favoritos</p>
+        <Link className="underline" href="/myaccount/order-history">Historial de pedidos</Link>
+        <Link className="underline"
           href={`/myaccount/personal-information/${session?.user_id_user_client}`}
         >
           Información personal

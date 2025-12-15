@@ -164,7 +164,7 @@ export default function PersonalInformationPage({
             className="border-b-2"
           />
         </div>
-        <button onClick={updateUser} className="bg-tertiary cursor-pointer text-black py-2 rounded-xl font-bold text-lg px-5">
+        <button className="bg-tertiary cursor-pointer text-black py-2 rounded-xl font-bold text-lg px-5">
           Editar datos
         </button>
       </form>

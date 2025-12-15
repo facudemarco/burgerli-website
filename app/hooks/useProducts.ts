@@ -16,7 +16,7 @@ export default function useAuth() {
       console.log(error);
       if (axios.isAxiosError(error) && error.response) {
         if (error.response.status === 400) {
-          console.error("Invalid username or password");
+          console.error("Not burgers found");
         } else {
           console.error(error);
         }
@@ -25,10 +25,34 @@ export default function useAuth() {
       }
     }
   };
+  // const getDrinks = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://api-burgerli.iwebtecnology.com/api/drinks",
+  //     );
+  //     if (!response) {
+  //       return null;
+  //     }
+  //     if (response.status === 200) {
+  //       return response.data;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (axios.isAxiosError(error) && error.response) {
+  //       if (error.response.status === 400) {
+  //         console.error("Not drinks found");
+  //       } else {
+  //         console.error(error);
+  //       }
+  //     } else {
+  //       console.error("An unexpected error occurred");
+  //     }
+  //   }
+  // };
 
   const createOrder = async (order: any) => {
     const response = await fetch(
-      "https://api-burgerli.iwebtecnology.com/api/createOrder",
+      "http://localhost:8000/createOrder",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

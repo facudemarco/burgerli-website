@@ -8,6 +8,7 @@ const config: Config = {
     "./app/page.tsx",
 
   ],
+  
   theme: {
   	extend: {
   		fontFamily: {
