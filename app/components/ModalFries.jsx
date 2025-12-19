@@ -13,7 +13,7 @@ const ModalFries = ({product}) => {
     const {addToCart} = useCart();
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [size, setSize] = useState(() => getDefaultSize(product?.size_list));
-    const sizePrices = { Individuales: product?.price_list[1], Especiales: product?.price_list[0] };
+    const sizePrices = { Individuales: product?.price_list[0], Especiales: product?.price_list[1] };
     const [totalPrice, setTotalPrice] = useState(() => Number(product?.price ?? 0));
     
     useEffect(() => {

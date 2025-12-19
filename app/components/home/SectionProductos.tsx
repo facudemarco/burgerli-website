@@ -3,6 +3,8 @@ import { Pattaya } from "next/font/google";
 import "./Productos.css";
 import ModalProducts from "../ModalProducts";
 import ModalFries from "../ModalFries";
+import ModalDips from "../ModalDips";
+import ModalDrinks from "../ModalDrinks";
 import useProducts from "@/app/hooks/useProducts";
 import { Burgers } from "@/types";
 import { useEffect, useState } from "react";
@@ -16,16 +18,19 @@ const pattaya = Pattaya({
 export default function Productos() {
   const [burgers, setBurgers] = useState<Burgers[]>([]);
   const [fries, setFries] = useState([]);
-  // const [drinks, setDrinks] = useState([]);
-  const { getBurgers, getFries } = useProducts();
+  const [drinks, setDrinks] = useState([]);
+  const [dips, setDips] = useState([]);
+  const { getBurgers, getFries, getDrinks, getDips } = useProducts();
   useEffect(() => {
     const getProducts = async () => {
       const burgers = await getBurgers();
       setBurgers(burgers);
-      // const drinks = await getDrinks();
-      // setDrinks(drinks);
+      const drinks = await getDrinks();
+      setDrinks(drinks);
       const fries = await getFries();
       setFries(fries);
+      const dips = await getDips();
+      setDips(dips);
     };
     getProducts();
   }, []);
@@ -44,6 +49,8 @@ export default function Productos() {
     size_list: ["XL", "L", "M", "S"],
     stock: true,
   };
+
+  console.log(dips);
 
   return (
     <section className="rounded-xl xl:w-3/4 w-full text-white">
@@ -105,9 +112,12 @@ export default function Productos() {
         />
       </div>
       <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between mt-10 mb-16">
-      {fries.map((fries) => (
+        {fries.map((fries) => (
           <ModalFries key={fries} product={fries} />
         ))}
+        {/* {dips.map((dips) => (
+          <ModalDips key={dips} product={dips} />
+        ))} */}
       </ul>
       <div id="bebidas" className="relative rounded-xl bg_promos w-full h-24">
         <div
@@ -122,7 +132,9 @@ export default function Productos() {
         />
       </div>
       <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between mt-10 mb-16">
-        {/* {drinks.map((drink) => ( <ModalProducts key={drink} product={drink} />))} */}
+        {drinks.map((drink) => (
+          <ModalDrinks key={drink} product={drink} />
+        ))}
       </ul>
     </section>
   );

@@ -103,9 +103,9 @@ export default function Header() {
             {menu && session && (
                 <div className='absolute right-5 md:right-10 rounded-lg z-30 top-[70px] md:top-[86px] shadow-xl overflow-hidden'>
                     <ul className='flex gap-1 flex-col justify-between items-start py-3 px-4 bg-amber-950 text-white min-w-[200px]'>
-                        <li className="w-full block py-2 px-2  text-gray-400 rounded transition-colors">
+                        {/* <li className="w-full block py-2 px-2  text-gray-400 rounded transition-colors">
                                 Mis favoritos
-                        </li>
+                        </li> */}
                         <li className="w-full">
                             <Link 
                                 onClick={handleShow} 

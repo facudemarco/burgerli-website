@@ -71,13 +71,13 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
     if (mode === "pickup") {
       setDeliveryPricing(0);
     } else {
-      setDeliveryPricing(5000);
+      setDeliveryPricing(1000);
     }
   }, [mode, selectedAddress]);
 
   useEffect(() => {
     setTotalPricingCart(
-      totalPricing() + salePricing + deliveryPricing - salePricing,
+      totalPricing() + salePricing + deliveryPricing - salePricing
     );
   }, [deliveryPricing, totalPricing, salePricing]);
 
@@ -235,12 +235,12 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
       </ul>
       {mode === "delivery" && (
         <>
-          <p className="text-start font-bold text-lg my-4">
-            Seleccioná tu sucursal mas cercana
+          <p className="text-start font-bold text-lg">
+          Seleccioná tu sucursal mas cercana <small>(Obligatorio)</small>
           </p>
           <select
             onChange={(e) => setSucursal(e.target.value)}
-            className="w-full"
+            className="w-full my-4 border rounded-lg border-white p-1"
           >
             <option disabled>Seleccione una sucursal</option>
             <option className="text-black" value="Gerli">
@@ -253,46 +253,58 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
               Lanus
             </option>
           </select>
-            <div className="flex flex-col gap-5">
-              {addresses?.length === 0 && session ? (
+          <div className="flex flex-col gap-5">
+            {addresses?.length === 0 && session ? (
+              <>
                 <p>No tienes direcciones guardadas en tu perfil.</p>
-              ) : (
-                addresses.map((address) => (
-                  <div
-                    key={address}
-                    className="flex py-8 justify-between items-center"
-                  >
-                    <div className="flex gap-3">
-                      <Ubicacion fill={"white"} />
-                      <div className="flex flex-col justify-center">
-                        <p>{address}</p>
-                      </div>
+                <div className=" py-1 my-3">
+                  {/* INPUT PARA AGREGAR NUEVA DIRECCION TEMPORARIA  */}
+                  <input
+                    value={addressInput}
+                    onChange={handleAddressInput}
+                    placeholder="Indique su direccion"
+                    className="w-full rounded-xl py-1 px-2 text-black bg-white"
+                    type="text"
+                  />
+                </div>
+              </>
+            ) : (
+              addresses.map((address) => (
+                <div
+                  key={address}
+                  className="flex py-8 justify-between items-center"
+                >
+                  <div className="flex gap-3">
+                    <Ubicacion fill={"white"} />
+                    <div className="flex flex-col justify-center">
+                      <p>{address}</p>
                     </div>
-                    <input
-                      type="radio"
-                      name="address"
-                      className="rounded-xl"
-                      checked={selectedAddress === address}
-                      onChange={() => setSelectedAddress(address)}
-                    />
                   </div>
-                ))
-              )}
-            </div>
-            {!session && (
-              <div className=" py-1 my-3">
-                {/* INPUT PARA AGREGAR NUEVA DIRECCION TEMPORARIA  */}
-                <input
-                  value={addressInput}
-                  onChange={handleAddressInput}
-                  placeholder="Indique su direccion"
-                  className="w-full rounded-xl py-1 px-2 text-black bg-white"
-                  type="text"
-                />
-              </div>
+                  <input
+                    type="radio"
+                    name="address"
+                    className="rounded-xl"
+                    checked={selectedAddress === address}
+                    onChange={() => setSelectedAddress(address)}
+                  />
+                </div>
+              ))
             )}
-          </>
-        )}
+          </div>
+          {!session && (
+            <div className=" py-1 my-3">
+              {/* INPUT PARA AGREGAR NUEVA DIRECCION TEMPORARIA  */}
+              <input
+                value={addressInput}
+                onChange={handleAddressInput}
+                placeholder="Indique su direccion"
+                className="w-full rounded-xl py-1 px-2 text-black bg-white"
+                type="text"
+              />
+            </div>
+          )}
+        </>
+      )}
       {mode === "pickup" && (
         <div>
           <p className="text-start font-bold text-lg my-4">

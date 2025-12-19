@@ -73,13 +73,13 @@ export default function Cart() {
     if (mode === "pickup") {
       setDeliveryPricing(0);
     } else {
-      setDeliveryPricing(5000);
+      setDeliveryPricing(1000);
     }
   }, [mode, selectedAddress]);
 
   useEffect(() => {
     setTotalPricingCart(
-      totalPricing() + salePricing + deliveryPricing - salePricing,
+      totalPricing() + salePricing + deliveryPricing - salePricing
     );
   }, [deliveryPricing, totalPricing, salePricing]);
 
@@ -258,12 +258,12 @@ export default function Cart() {
         </ul>
         {mode === "delivery" && (
           <>
-            <p className="text-start font-bold text-lg my-4">
+            <p className="text-start font-bold text-lg">
               Seleccioná tu sucursal mas cercana <small>(Obligatorio)</small>
             </p>
             <select
               onChange={(e) => setSucursal(e.target.value)}
-              className="w-full border rounded-md border-white p-1"
+              className="w-full my-4 border rounded-lg border-white p-1"
             >
               <option disabled>Seleccione una sucursal</option>
               <option className="text-black" value="gerli">
@@ -281,7 +281,19 @@ export default function Cart() {
             </p>
             <div className="flex flex-col gap-2">
               {addresses?.length === 0 && session ? (
-                <p>No tienes direcciones guardadas en tu perfil.</p>
+                <>
+                  <p>No tienes direcciones guardadas en tu perfil.</p>
+                  <div className=" py-1 my-3">
+                    {/* INPUT PARA AGREGAR NUEVA DIRECCION TEMPORARIA  */}
+                    <input
+                      value={addressInput}
+                      onChange={handleAddressInput}
+                      placeholder="Indique su direccion"
+                      className="w-full rounded-xl py-1 px-2 text-black bg-white"
+                      type="text"
+                    />
+                  </div>
+                </>
               ) : (
                 addresses.map((address) => (
                   <div

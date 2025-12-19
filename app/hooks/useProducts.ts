@@ -52,30 +52,55 @@ export default function useAuth() {
     }
   };
 
-  // const getDrinks = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://api-burgerli.iwebtecnology.com/api/drinks",
-  //     );
-  //     if (!response) {
-  //       return null;
-  //     }
-  //     if (response.status === 200) {
-  //       return response.data;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     if (axios.isAxiosError(error) && error.response) {
-  //       if (error.response.status === 400) {
-  //         console.error("Not drinks found");
-  //       } else {
-  //         console.error(error);
-  //       }
-  //     } else {
-  //       console.error("An unexpected error occurred");
-  //     }
-  //   }
-  // };
+  const getDrinks = async () => {
+    try {
+      const response = await axios.get(
+        "https://burgerli.com.ar/MdpuF8KsXiRArNIHtI6pXO2XyLSJMTQ8_Burgerli/api/drinks",
+      );
+      if (!response) {
+        return null;
+      }
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 400) {
+          console.error("Not drinks found");
+        } else {
+          console.error(error);
+        }
+      } else {
+        console.error("An unexpected error occurred");
+      }
+    }
+  };
+
+  const getDips = async () => {
+    try {
+      const response = await axios.get(
+        "https://burgerli.com.ar/MdpuF8KsXiRArNIHtI6pXO2XyLSJMTQ8_Burgerli/api/dips",
+      );
+      if (!response) {
+        return null;
+      }
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 400) {
+          console.error("Not drinks found");
+        } else {
+          console.error(error);
+        }
+      } else {
+        console.error("An unexpected error occurred");
+      }
+    }
+  };
 
   const createOrder = async (order: any) => {
     const response = await fetch(
@@ -125,5 +150,5 @@ export default function useAuth() {
       }
     }
   };
-  return { getBurgers, getOrder, getFries, createOrder };
+  return { getBurgers, getDrinks,getDips, getOrder, getFries, createOrder };
 }
