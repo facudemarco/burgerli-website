@@ -9,26 +9,35 @@ export const CartContextProvider = ({children}) => {
   const [cartProducts, setCartProducts] = useState([])
 
   const addToCart = (item) => {
-    const productFound = cartProducts.findIndex((product) => product.price === item.price)
-    
+    const productFound = cartProducts.findIndex(
+      (product) =>
+        product.price === item.price &&
+        product.sin === item.sin &&
+        product.size === item.size
+    )
+  
+    // 🟢 Si existe → sumar cantidad
     if (productFound >= 0) {
       const newCart = structuredClone(cartProducts)
       newCart[productFound].quantity += 1
-      console.log(newCart)
       setCartProducts(newCart)
+      return
     }
-    setCartProducts(prevState => ([
+  
+    // 🟢 Si NO existe → agregar nuevo
+    setCartProducts(prevState => [
       ...prevState,
       {
         ...item,
-        quantity : 1
+        quantity: 1
       }
-    ]))
+    ])
+  
     toast.success("Producto agregado al carrito")
-    };
+  }
 
   const removeFromCart = (item) => {
-      setCartProducts(prevState => prevState.filter((product) => product.price !== item.price))
+      setCartProducts(prevState => prevState.filter((product) => product.price !== item.price  || product.sin !== item.sin))
       toast.error("Producto eliminado del carrito")
   }
   const addQuantity = (item) => {

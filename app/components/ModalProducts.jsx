@@ -22,11 +22,28 @@ const ModalProducts = ({product}) => {
 
   const [fries, setFries] = useState("Cheddar");
   const friesList = ["Cheddar","Cheddar y Panceta","Papas Burgerli"];
+  const friesPrices = { "Cheddar": 0, "Cheddar y Panceta": 1000, "Papas Burgerli": 2000 };
   
   useEffect(() => {
     setSize(getDefaultSize(product?.size_list));
     setTotalPrice(Number(product?.price ?? 0));
   }, [product]);
+
+  // Bloquear scroll del body cuando el modal está abierto
+  useEffect(() => {
+    if (selectedProduct) {
+      // Bloquear scroll del body
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restaurar scroll del body
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup al desmontar
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedProduct]);
 
   const openModal = (product) => {
     setSelectedProduct(product);
@@ -74,7 +91,8 @@ const ModalProducts = ({product}) => {
   // const extrasAddition = extras.reduce((sum) => sum + extraPrice, 0);
 
   const sizeAddition = sizePrices[size] ?? 0;
-  const finalPrice = totalPrice + sizeAddition; // + extrasAddition
+  const friesAddition = friesPrices[fries] ?? 0;
+  const finalPrice = totalPrice + sizeAddition + friesAddition; // + extrasAddition
   
 
   const handleAddToCart = () => {
@@ -82,7 +100,7 @@ const ModalProducts = ({product}) => {
       name: selectedProduct.name,
       quantity: 1,
       // extras: extras,
-      sin: without,
+      sin: without ?? "-",
       fries: fries,
       price: finalPrice,
       size: size,
@@ -101,10 +119,17 @@ const ModalProducts = ({product}) => {
 
       {/* Modal */}
       {selectedProduct && (
-        <section  className="fixed rounded-4xl inset-0 h-screen z-50 flex items-center justify-center p-4 modal-overlay">
+        <section  
+          className="fixed rounded-4xl inset-0 h-screen z-50 flex items-center justify-center p-4 modal-overlay"
+          style={{ touchAction: 'none' }}
+        >
           <div
             className="rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
+            style={{ 
+              overscrollBehavior: 'contain',
+              WebkitOverflowScrolling: 'touch'
+            }}
           >
             <div className="relative bg-primary">
               <div>
@@ -211,13 +236,13 @@ const ModalProducts = ({product}) => {
                     <div className="flex flex-col justify-between text-white font-light items-center w-full gap-2">
                       {friesList.map((f) => (
                         <div key={f} className="flex justify-between text-white font-light items-center w-full gap-2">
-                          <p>{f}</p>
+                          <p>{f} ($ {friesPrices[f].toLocaleString("es-AR")})</p>
                           <input
                             name="fries"
                             value={f}
                             type="radio"
                             onChange={(e) => handleFriesToggle(e.target.value)}
-
+                            checked={fries === f}
                           />
                         </div>
                       ))}

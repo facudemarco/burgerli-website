@@ -35,26 +35,27 @@ export default function Productos() {
     getProducts();
   }, []);
 
-  const product: Burgers = {
-    id_burger: "1",
-    name: "Producto de prueba",
-    price: 1,
-    size: "XL",
-    fries: "Normal",
-    extras: ["Extra 1", "Extra 2"],
-    sin: ["Sin 1", "Sin 2"],
-    description: "Producto de prueba",
-    main_image: "https://i.imgur.com/v7q9p5j.jpg",
-    ingredients_list: ["Ingrediente 1", "Ingrediente 2"],
-    size_list: ["XL", "L", "M", "S"],
-    stock: true,
-  };
+  // const product: Burgers = {
+  //   id_burger: "1",
+  //   name: "Producto de prueba",
+  //   price: 1,
+  //   size: "XL",
+  //   fries: "Normal",
+  //   extras: ["Extra 1", "Extra 2"],
+  //   sin: ["Sin 1", "Sin 2"],
+  //   description: "Producto de prueba",
+  //   main_image: "https://i.imgur.com/v7q9p5j.jpg",
+  //   ingredients_list: ["Ingrediente 1", "Ingrediente 2"],
+  //   size_list: ["XL", "L", "M", "S"],
+  //   stock: true,
+  // };
 
   console.log(dips);
+  console.log(drinks);
 
   return (
     <section className="rounded-xl xl:w-3/4 w-full text-white">
-      <div
+      {/* <div
         id="promociones"
         className="relative rounded-xl bg_promos w-full h-24"
       >
@@ -68,8 +69,8 @@ export default function Productos() {
           alt="Promociones"
           className="rounded-xl after w-full h-full object-cover bg-center absolute top-0 left-0"
         />
-      </div>
-      <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between mt-10 mb-16">
+      </div> */}
+      <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between">
         {/* {burgers.map((burger: Burgers) => (
           <ModalProducts key={burger.id_burger} product={burger} />
         ))}
@@ -90,11 +91,11 @@ export default function Productos() {
           className="rounded-xl after w-full h-full object-cover bg-center absolute top-0 left-0"
         />
       </div>
-      <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between mt-10 mb-16">
+      <ul className="text-black flex flex-col items-center md:grid grid-cols-2 xl:grid-cols-4 gap-10 justify-center xl:place-items-center mt-10 mb-16">
         {burgers.map((burger: Burgers) => (
           <ModalProducts key={burger.id_burger} product={burger} />
         ))}
-        <ModalProducts product={product} />
+        {/* <ModalProducts product={product} /> */}
       </ul>
       <div
         id="acompañamientos"
@@ -112,12 +113,12 @@ export default function Productos() {
         />
       </div>
       <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between mt-10 mb-16">
-        {fries.map((fries) => (
-          <ModalFries key={fries} product={fries} />
+        {fries.map((fries: Burgers) => (
+          <ModalFries key={fries.id_fries} product={fries} />
         ))}
-        {/* {dips.map((dips) => (
-          <ModalDips key={dips} product={dips} />
-        ))} */}
+        {dips.map((dips: Burgers) => (
+          <ModalDips key={dips.id_dips} product={dips} />
+        ))}
       </ul>
       <div id="bebidas" className="relative rounded-xl bg_promos w-full h-24">
         <div
@@ -132,8 +133,8 @@ export default function Productos() {
         />
       </div>
       <ul className="text-black flex flex-wrap gap-5 justify-center xl:justify-between mt-10 mb-16">
-        {drinks.map((drink) => (
-          <ModalDrinks key={drink} product={drink} />
+        {drinks.map((drink: Burgers) => (
+          <ModalDrinks key={drink.id_drinks} product={drink} />
         ))}
       </ul>
     </section>

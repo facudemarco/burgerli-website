@@ -5,7 +5,6 @@ import Card from "./Card";
 
 
 const ModalDips = ({ product }) => {
-    console.log(product);
     
   const { addToCart } = useCart();
   const [selectedProduct, setSelectedProduct] = useState(null);

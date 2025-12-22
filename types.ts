@@ -1,6 +1,8 @@
 export type Burgers = {
   description_list?: string[];
   id_drinks?: string;
+  id_dips?: string;
+  images?: string[];
   id_fries?: string;
   id_burger: string;
   name: string;

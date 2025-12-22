@@ -184,6 +184,54 @@ p-3
           </div>
         </>
       )}
+      {product.id_dips && (
+         <>
+         <img
+           src={product.images[0]}
+           alt="Foto dip"
+           className="h-48 w-full object-cover bg-[#FCEDCC]"
+         />
+         <div
+           className="
+flex flex-col
+justify-between
+flex-1
+bg-primary
+text-white
+p-3
+"
+         >
+           <div className="flex flex-col gap-3">
+             <p className="font-bold">{product.name}</p>
+             <small className="text-xs opacity-90 truncate">
+               {product.description}
+             </small>
+             <span className="font-bold">
+               ${basePrice.toLocaleString("es-AR")}
+             </span>
+             <div
+               className="
+       pointer-events-none
+       absolute left-3 right-3 bottom-14
+       rounded-lg
+       bg-black/90
+       px-3 py-2
+       text-xs text-white
+       opacity-0
+       translate-y-2
+       transition-all duration-300 ease-out
+       group-hover:opacity-100
+       group-hover:translate-y-0
+     "
+             >
+               {product.description_list?.[0]
+                 ? product.description_list[0]
+                 : null}
+             </div>
+           </div>
+         </div>
+       </>
+      )}
     </li>
   );
 }

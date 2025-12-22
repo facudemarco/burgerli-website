@@ -163,7 +163,7 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
             <div className="flex flex-col items-start gap-1">
               <p className="font-bold">{product.name}</p>
               {product.sin && <small>Sin: {product.sin.join(", ")}</small>}
-              <small>Tamaño: {product.size}</small>
+              {product.size && <small>Tamaño: {product.size}</small>}
               {product.fries && <small>Papas: {product.fries}</small>}
               <button
                 onClick={() => removeFromCart(product)}

@@ -67,7 +67,6 @@ export default function Cart() {
     };
     getUser();
   }, [userById, session]);
-  console.log("Direccines: ", addresses);
 
   useEffect(() => {
     if (mode === "pickup") {
@@ -183,7 +182,7 @@ export default function Cart() {
                   <p className="font-bold">{product.name}</p>
                   {/* <small>Extras: {product.extras.join(", ")}</small> */}
                   {product.sin && <small>Sin: {product.sin.join(", ")}</small>}
-                  <small>Tamaño: {product.size}</small>
+                  {product.size && <small>Tamaño: {product.size}</small>}
                   {product.fries && <small>Papas: {product.fries}</small>}
                   <button
                     onClick={() => removeFromCart(product)}
