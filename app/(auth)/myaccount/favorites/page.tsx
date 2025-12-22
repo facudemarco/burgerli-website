@@ -16,7 +16,7 @@ export default function FavoritePage() {
       main_image: "https://i.imgur.com/v7q9p5j.jpg",
       ingredients_list: ["Ingrediente 1", "Ingrediente 2"],
       size_list: ["XL", "L", "M", "S"],
-      stock: true,
+      stock: 1,
     }
 
   return (
