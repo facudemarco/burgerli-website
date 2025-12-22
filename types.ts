@@ -3,6 +3,7 @@ export type Burgers = {
   id_drinks?: string;
   id_dips?: string;
   images?: string[];
+  id_promos?: string;
   id_fries?: string;
   id_burger: string;
   name: string;
@@ -10,7 +11,7 @@ export type Burgers = {
   fries: string;
   price: number;
   price_list?: number[];
-  stock: boolean;
+  stock: number;
   description: string;
   main_image: string;
   extras: string[];

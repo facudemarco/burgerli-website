@@ -11,7 +11,7 @@ const getDefaultSize = (size_list) => {
   return "Doble"; // fallback
 };
 
-const ModalProducts = ({product}) => {
+const ModalProducts = ({product}, stock) => {
   const {addToCart} = useCart();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [size, setSize] = useState(() => getDefaultSize(product?.size_list));
@@ -21,8 +21,8 @@ const ModalProducts = ({product}) => {
   const [totalPrice, setTotalPrice] = useState(() => Number(product?.price ?? 0));
 
   const [fries, setFries] = useState("Cheddar");
-  const friesList = ["Cheddar","Cheddar y Panceta","Papas Burgerli"];
-  const friesPrices = { "Cheddar": 0, "Cheddar y Panceta": 1000, "Papas Burgerli": 2000 };
+  const friesList = ["Simples","Cheddar","Cheddar y Panceta"];
+  const friesPrices = { "Simples": 0, "Cheddar": 4000, "Cheddar y Panceta": 4300 };
   
   useEffect(() => {
     setSize(getDefaultSize(product?.size_list));
@@ -46,7 +46,13 @@ const ModalProducts = ({product}) => {
   }, [selectedProduct]);
 
   const openModal = (product) => {
+    // No abrir el modal si el producto no tiene stock
+    if (product.stock === 0) {
+      return;
+    }
     setSelectedProduct(product);
+    console.log(product);
+    
   };
 
   const closeModal = () => {
@@ -112,10 +118,16 @@ const ModalProducts = ({product}) => {
 
   return (
     <section>
-      <Card product={product} onClick={(e) => {
-        e.stopPropagation();
-        openModal(product);
-      }} />
+      <Card 
+        product={product} 
+        onClick={(e) => {
+          e.stopPropagation();
+          // Solo abrir modal si hay stock
+          if (product.stock !== 0) {
+            openModal(product);
+          }
+        }} 
+      />
 
       {/* Modal */}
       {selectedProduct && (
@@ -165,7 +177,7 @@ const ModalProducts = ({product}) => {
                   </h3>
                   <hr className="border-tertiary border-[1px]" />
                   <div className="flex flex-col justify-between items-start mt-2 gap-2">
-                    {selectedProduct.size_list.map((s) => 
+                    {selectedProduct.size.map((s) => 
                       (
                       <div key={s} className="flex justify-between text-white font-light items-center w-full gap-2">
                         <p>{s}</p>
@@ -204,14 +216,14 @@ const ModalProducts = ({product}) => {
                 )} */}
 
                 {/* Sin */}
-                {selectedProduct.ingredients_list.length > 0 && (
+                {selectedProduct.ingredients.length > 0 && (
                   <div className="mb-6 px-6">
                     <h3 className="text-lg mt-2 text-tertiary text-tert font-semibold">
                       Sin
                     </h3>
                     <hr className="border-tertiary my-2 border-[1px]" />
                     <div className="flex flex-col justify-between text-white font-light items-center w-full gap-2">
-                      {selectedProduct.ingredients_list.map((sin) => (
+                      {selectedProduct.ingredients.map((sin) => (
                         <div key={sin} className="flex justify-between text-white font-light items-center w-full gap-2">
                           <p>{sin}</p>
                           <input

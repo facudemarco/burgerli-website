@@ -13,7 +13,8 @@ export const CartContextProvider = ({children}) => {
       (product) =>
         product.price === item.price &&
         product.sin === item.sin &&
-        product.size === item.size
+        product.size === item.size &&
+        product.name === item.name
     )
   
     // 🟢 Si existe → sumar cantidad
@@ -37,7 +38,7 @@ export const CartContextProvider = ({children}) => {
   }
 
   const removeFromCart = (item) => {
-      setCartProducts(prevState => prevState.filter((product) => product.price !== item.price  || product.sin !== item.sin))
+      setCartProducts(prevState => prevState.filter((product) => product.price !== item.price  || product.sin !== item.sin || product.name !== item.name))
       toast.error("Producto eliminado del carrito")
   }
   const addQuantity = (item) => {

@@ -83,7 +83,7 @@ const ModalFries = ({product}) => {
                     </h2>
                     <p className="text-black mb-6">
                       {selectedProduct.id_burger && selectedProduct.description}
-                      {selectedProduct.id_fries && selectedProduct.description_list[0]}
+                      {selectedProduct.id_fries && selectedProduct.description_list.map((d) => d).join(", ")}
                     </p>
                   </div>
   
