@@ -20,7 +20,7 @@ const ModalProducts = ({product}, stock) => {
   const [without, setWithout] = useState([]);
   const [totalPrice, setTotalPrice] = useState(() => Number(product?.price ?? 0));
 
-  const [fries, setFries] = useState("Cheddar");
+  const [fries, setFries] = useState("Simples");
   const friesList = ["Simples","Cheddar","Cheddar y Panceta"];
   const friesPrices = { "Simples": 0, "Cheddar": 4000, "Cheddar y Panceta": 4300 };
   

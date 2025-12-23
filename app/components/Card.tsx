@@ -47,9 +47,7 @@ export default function Card({ product, onClick }: CardProps) {
   
   // Calcular el precio: precio base + precio del tamaño más pequeño disponible
   const basePrice = Number(product.price) + (smallestSize ? (sizePrices[smallestSize] ?? 0) : 0);
-  
-  console.log('Precio final:', basePrice);
-  
+    
   const isOutOfStock = product.stock === 0;
 
   return (
