@@ -246,11 +246,17 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
             <option className="text-black" value="Gerli">
               Gerli
             </option>
+<<<<<<< HEAD
             
             <option className="text-black" value="Wilde">
               Wilde
             </option>
            
+=======
+            <option className="text-black" value="Wilde">
+              Wilde
+            </option>
+>>>>>>> 9fc2f05a413e56133d84177c9032361e543e84d0
             <option className="text-black" value="Lanus">
               Lanus
             </option>
@@ -320,11 +326,17 @@ export default function CartResponsive({ closed }: { closed: () => void }) {
             <option className="text-black" value="Gerli">
               Gerli
             </option>
+<<<<<<< HEAD
             
             <option className="text-black" value="Wilde">
               Wilde
             </option>
            
+=======
+            <option className="text-black" value="Wilde">
+              Wilde
+            </option>
+>>>>>>> 9fc2f05a413e56133d84177c9032361e543e84d0
             <option className="text-black" value="Lanus">
               Lanus
             </option>
